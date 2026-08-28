@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Bruger\\Desktop\\ITU\\ToBeRenamed\\Project\\Bison\\Bison.CLI\\Bison.CLI.csproj": {}
+    "c:\\Users\\Bruger\\Desktop\\ITU\\ToBeRenamed\\Project\\Bison\\Bison.CLI\\Bison.CLI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Bruger\\Desktop\\ITU\\ToBeRenamed\\Project\\Bison\\Bison.CLI\\Bison.CLI.csproj": {
+    "c:\\Users\\Bruger\\Desktop\\ITU\\ToBeRenamed\\Project\\Bison\\Bison.CLI\\Bison.CLI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Bruger\\Desktop\\ITU\\ToBeRenamed\\Project\\Bison\\Bison.CLI\\Bison.CLI.csproj",
+        "projectUniqueName": "c:\\Users\\Bruger\\Desktop\\ITU\\ToBeRenamed\\Project\\Bison\\Bison.CLI\\Bison.CLI.csproj",
         "projectName": "Bison.CLI",
-        "projectPath": "C:\\Users\\Bruger\\Desktop\\ITU\\ToBeRenamed\\Project\\Bison\\Bison.CLI\\Bison.CLI.csproj",
+        "projectPath": "c:\\Users\\Bruger\\Desktop\\ITU\\ToBeRenamed\\Project\\Bison\\Bison.CLI\\Bison.CLI.csproj",
         "packagesPath": "C:\\Users\\Bruger\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Bruger\\Desktop\\ITU\\ToBeRenamed\\Project\\Bison\\Bison.CLI\\obj\\",
+        "outputPath": "c:\\Users\\Bruger\\Desktop\\ITU\\ToBeRenamed\\Project\\Bison\\Bison.CLI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Bruger\\AppData\\Roaming\\NuGet\\NuGet.Config",

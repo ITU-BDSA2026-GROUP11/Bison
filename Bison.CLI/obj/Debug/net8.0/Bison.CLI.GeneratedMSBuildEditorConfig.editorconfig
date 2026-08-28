@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Bison.CLI
-build_property.ProjectDir = C:\Users\Bruger\Desktop\ITU\ToBeRenamed\Project\Bison\Bison.CLI\
+build_property.ProjectDir = c:\Users\Bruger\Desktop\ITU\ToBeRenamed\Project\Bison\Bison.CLI\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
