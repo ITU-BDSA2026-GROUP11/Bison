@@ -75,14 +75,7 @@ static void observe(string observation)
 
                 csv.WriteRecord(record);
                 csv.NextRecord();
-                
-            string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
-            var currentTime = DateTimeOffset.Now;
-            //File.AppendAllText(filePath, Environment.UserName + ", " + observation + ", " + currentTime.ToUnixTimeSeconds());
-            using(StreamWriter sw = File.AppendText(filePath))
-            {
-                sw.WriteLine(Environment.UserName + "," + '"'+ observation + '"' + "," + currentTime.ToUnixTimeSeconds());
-            }
+            
             } catch(Exception e)
             {
                 Console.WriteLine(e);
