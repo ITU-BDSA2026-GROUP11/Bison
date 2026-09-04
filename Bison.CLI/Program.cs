@@ -6,14 +6,11 @@ using CsvHelper;
 
 namespace Bison.CLI
 {
-static class program{
+static class Program{
 
 public record Cheep(string Author, string Observation, long Timestamp);
-
-static string Auther, Observation;
 static string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
 
-//string filePath = @"C:\Users\Bruger\Desktop\ITU\ToBeRenamed\Project\Bison\Bison.CLI\bison_observe_cli_db.csv";
 static int Main(string[] args)
         {
         string line = args[0].ToLowerInvariant();
@@ -24,7 +21,7 @@ static int Main(string[] args)
         
         if(line == "observe")
             {
-                String observation = "";
+                string observation = "";
                 for(int i = 1; i < args.Length; i++)
                 {
                     observation = observation + args[i] + " ";
@@ -39,11 +36,6 @@ static void read()
             
             try{
 
-
-            string Auther, Observation;
-            string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
-
-            //string filePath = @"C:\Users\Bruger\Desktop\ITU\ToBeRenamed\Project\Bison\Bison.CLI\bison_observe_cli_db.csv";
             using(var reader = new StreamReader(File.OpenRead(filePath)))
             using(var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
@@ -55,8 +47,6 @@ static void read()
                         var timeFormatted = observeTime.ToString("dd'/'MM'/'yy HH:mm:ss");
                         Console.WriteLine(record.Author + " @ " + timeFormatted + ": " + record.Observation);
                     }
-
-                    Console.WriteLine();
                 }
                 } catch(Exception e)
             {
@@ -66,17 +56,26 @@ static void read()
 
         }
 
-static void observe(String observation)
+static void observe(string observation)
         {
             try
             {
-                string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
-            var currentTime = DateTimeOffset.Now;
-            //File.AppendAllText(filePath, Environment.UserName + ", " + observation + ", " + currentTime.ToUnixTimeSeconds());
-            using(StreamWriter sw = File.AppendText(filePath))
-            {
-                sw.WriteLine(Environment.UserName + "," + '"'+ observation + '"' + "," + currentTime.ToUnixTimeSeconds());
-            }
+                var fileExist = File.Exists(filePath);
+
+                Cheep record = new(Environment.UserName, observation, DateTimeOffset.Now.ToUnixTimeSeconds());
+
+                using var writer = new StreamWriter(filePath, true);
+                using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+
+                if (!fileExist)
+                {
+                    csv.WriteHeader<Cheep>();
+                    csv.NextRecord();
+                }
+
+                csv.WriteRecord(record);
+                csv.NextRecord();
+                
             } catch(Exception e)
             {
                 Console.WriteLine(e);
