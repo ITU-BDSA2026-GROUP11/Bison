@@ -484,5 +484,5 @@ $RECYCLE.BIN/
 *.swp
 
 # dotnet build obj and bin
-obj/
-bin/
+Bison.CLI/obj
+Bison.CLI/bin
