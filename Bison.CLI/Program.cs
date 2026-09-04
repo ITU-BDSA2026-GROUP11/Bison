@@ -8,7 +8,7 @@ namespace Bison.CLI
 {
 static class program{
 
-public record Cheep(string Author, string Message, long Timestamp);
+public record Cheep(string Author, string Observation, long Timestamp);
 
 static string Auther, Observation;
 static string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
@@ -49,6 +49,12 @@ static void read()
                 {
                     var records = csv.GetRecords<Cheep>();
                     
+                    foreach (var record in records)
+                    {
+                        Console.WriteLine(record.Author);
+                    }
+
+                    Console.WriteLine();
                 }
                 } catch(Exception e)
             {
