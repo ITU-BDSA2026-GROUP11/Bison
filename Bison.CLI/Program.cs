@@ -1,10 +1,15 @@
 ﻿
 using System;
+using System.Globalization;
+using CsvHelper;
 
 
 namespace Bison.CLI
 {
 static class program{
+
+public record Cheep(string Author, string Message, long Timestamp);
+
 static string Auther, Observation;
 static string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
 
@@ -39,22 +44,11 @@ static void read()
             string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
 
             //string filePath = @"C:\Users\Bruger\Desktop\ITU\ToBeRenamed\Project\Bison\Bison.CLI\bison_observe_cli_db.csv";
-            using(StreamReader reader = new StreamReader(File.OpenRead(filePath)))
+            using(var reader = new StreamReader(File.OpenRead(filePath)))
+            using(var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
-                    string line;
-                    string waste = reader.ReadLine();
-                    while(!reader.EndOfStream)
-                        {
-                            line = reader.ReadLine();
-
-                            string[] Observe = line.Split(","); 
-                            Auther = Observe[0];
-                            Observation = Observe[1];
-                            var observeTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(Observe[2])).ToLocalTime();
-                            var timeFormatted = observeTime.ToString("dd'/'MM'/'yy HH:mm:ss");
-                            Console.WriteLine(Auther + " @ " + timeFormatted + ": " + Observation);
-
-                        }
+                    var records = csv.GetRecords<Cheep>();
+                    
                 }
                 } catch(Exception e)
             {
