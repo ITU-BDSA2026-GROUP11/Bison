@@ -51,7 +51,9 @@ static void read()
                     
                     foreach (var record in records)
                     {
-                        Console.WriteLine(record.Author);
+                        var observeTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp).ToLocalTime();
+                        var timeFormatted = observeTime.ToString("dd'/'MM'/'yy HH:mm:ss");
+                        Console.WriteLine(record.Author + " @ " + timeFormatted + ": " + record.Observation);
                     }
 
                     Console.WriteLine();
