@@ -70,7 +70,7 @@ static void observe(String observation)
         {
             try
             {
-                string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
+            string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
             var currentTime = DateTimeOffset.Now;
             //File.AppendAllText(filePath, Environment.UserName + ", " + observation + ", " + currentTime.ToUnixTimeSeconds());
             using(StreamWriter sw = File.AppendText(filePath))
