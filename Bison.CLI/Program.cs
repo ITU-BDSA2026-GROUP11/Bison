@@ -6,41 +6,38 @@ using CsvHelper;
 
 namespace Bison.CLI
 {
-static class Program{
+    static class Program
+    {
 
-public record Cheep(string Author, string Observation, long Timestamp);
-static string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
+        public record Cheep(string Author, string Observation, long Timestamp);
+        static string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
 
-static int Main(string[] args)
+        static void Main(string[] args)
         {
-        string line = args[0].ToLowerInvariant();
-        if(line == "read")
+            string line = args[0].ToLowerInvariant();
+            if (line == "read")
             {
                 read();
             }
-        
-        if(line == "observe")
+            if (line == "observe")
             {
                 string observation = "";
-                for(int i = 1; i < args.Length; i++)
+                for (int i = 1; i < args.Length; i++)
                 {
                     observation = observation + args[i] + " ";
                 }
                 observe(observation);
             }
-    return 0;
-    }
+        }
 
-static void read()
+        static void read()
         {
-            
-            try{
-
-            using(var reader = new StreamReader(File.OpenRead(filePath)))
-            using(var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            try
+            {
+                using (var reader = new StreamReader(File.OpenRead(filePath)))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     var records = csv.GetRecords<Cheep>();
-                    
                     foreach (var record in records)
                     {
                         var observeTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp).ToLocalTime();
@@ -48,20 +45,18 @@ static void read()
                         Console.WriteLine(record.Author + " @ " + timeFormatted + ": " + record.Observation);
                     }
                 }
-                } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e);
             }
-
-
         }
 
-static void observe(string observation)
+        static void observe(string observation)
         {
             try
             {
                 var fileExist = File.Exists(filePath);
-
                 Cheep record = new(Environment.UserName, observation, DateTimeOffset.Now.ToUnixTimeSeconds());
 
                 using var writer = new StreamWriter(filePath, true);
@@ -75,13 +70,13 @@ static void observe(string observation)
 
                 csv.WriteRecord(record);
                 csv.NextRecord();
-            
-            } catch(Exception e)
+
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e);
             }
-            
         }
     }
 }
-        
+
