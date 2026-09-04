@@ -483,6 +483,3 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-# dotnet build obj and bin
-Bison.CLI/obj
-Bison.CLI/bin
