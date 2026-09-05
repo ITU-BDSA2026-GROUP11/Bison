@@ -1,80 +1,41 @@
-﻿
-using System;
-using System.Globalization;
-using CsvHelper;
+﻿using System.Globalization;
+using CsvHelper.Expressions;
+using SimpleDB;
 
 
 namespace Bison.CLI
 {
-    static class Program
+    class Program
     {
-
         public record Cheep(string Author, string Observation, long Timestamp);
-        static string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
 
         static void Main(string[] args)
         {
+            IDatabaseRepository<Cheep> db = new CSVDatabase<Cheep>();
             string line = args[0].ToLowerInvariant();
+
             if (line == "read")
             {
-                read();
+                //Reading the Cheeps from the CSVDatabase
+                foreach (Cheep record in db.Read()){
+                //Formatting the Cheep and printing it to console
+                var observeTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp).ToLocalTime();
+                var timeFormatted = observeTime.ToString("dd'/'MM'/'yy HH:mm:ss");
+                Console.WriteLine(record.Author + " @ " + timeFormatted + ": " + record.Observation);
+                }
             }
             if (line == "observe")
             {
+                //Parsing user input
                 string observation = "";
                 for (int i = 1; i < args.Length; i++)
                 {
                     observation = observation + args[i] + " ";
                 }
-                observe(observation);
-            }
-        }
 
-        static void read()
-        {
-            try
-            {
-                using (var reader = new StreamReader(File.OpenRead(filePath)))
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-                {
-                    var records = csv.GetRecords<Cheep>();
-                    foreach (var record in records)
-                    {
-                        var observeTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp).ToLocalTime();
-                        var timeFormatted = observeTime.ToString("dd'/'MM'/'yy HH:mm:ss");
-                        Console.WriteLine(record.Author + " @ " + timeFormatted + ": " + record.Observation);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-
-        static void observe(string observation)
-        {
-            try
-            {
-                var fileExist = File.Exists(filePath);
+                //Creating the Cheep and writing it to the CSVDatabase
                 Cheep record = new(Environment.UserName, observation, DateTimeOffset.Now.ToUnixTimeSeconds());
-
-                using var writer = new StreamWriter(filePath, true);
-                using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-
-                if (!fileExist)
-                {
-                    csv.WriteHeader<Cheep>();
-                    csv.NextRecord();
-                }
-
-                csv.WriteRecord(record);
-                csv.NextRecord();
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
+                db.Store(record);
             }
         }
     }
