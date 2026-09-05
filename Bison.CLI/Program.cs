@@ -1,30 +1,38 @@
-﻿using System.Net.NetworkInformation;
+﻿using System;
 using SimpleDB;
+using DocoptNet;//this is the CLI console parser (parses user input)
 
 
 namespace Bison.CLI
 {
     class Program
     {
+        //This string is the contains info for DocoptNet and shows available commmands
+        private const string Usage = @"
+            Usage:
+                Bison read
+                Bison observe <observation>
+                Bison (-h | --help)
+
+            Options:
+                -h --help    Show this help message.
+        ";
+
         static void Main(string[] args)
         {
             IDatabaseRepository<Cheep> db = new CSVDatabase<Cheep>();
-            
-            string line = args[0].ToLowerInvariant();
 
-            if (line == "read")
+            var arguments = new Docopt().Apply(Usage, args, help: true);
+
+            if (arguments!["read"].IsTrue)// the "!" supress the error: arguments may be null
             {
                 //UserInterface handles writing to the console
                 UserInterface.PrintObservations(db.Read());
             }
-            if (line == "observe")
+            if (arguments["observe"].IsTrue)
             {
-                //Parsing user input
-                string observation = "";
-                for (int i = 1; i < args.Length; i++)
-                {
-                    observation = observation + args[i] + " ";
-                }
+                //Parses user input from <observation> to string
+                string observation = arguments["<observation>"].ToString();
 
                 //Creating the Cheep and writing it to the CSVDatabase
                 Cheep record = new(Environment.UserName, observation, DateTimeOffset.Now.ToUnixTimeSeconds());
