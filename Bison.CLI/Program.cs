@@ -7,6 +7,7 @@ namespace Bison.CLI
 {
     class Program
     {
+        //This string is the contains info for DocoptNet and shows available commmands
         private const string Usage = @"
             Usage:
                 Bison read
@@ -17,14 +18,13 @@ namespace Bison.CLI
                 -h --help    Show this help message.
         ";
 
-
         static void Main(string[] args)
         {
             IDatabaseRepository<Cheep> db = new CSVDatabase<Cheep>();
 
             var arguments = new Docopt().Apply(Usage, args, help: true);
 
-            if (arguments!["read"].IsTrue)// the "!" supress the error arguments may be null
+            if (arguments!["read"].IsTrue)// the "!" supress the error: arguments may be null
             {
                 //UserInterface handles writing to the console
                 UserInterface.PrintObservations(db.Read());
