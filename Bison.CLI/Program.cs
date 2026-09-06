@@ -38,6 +38,17 @@ namespace Bison.CLI
                 Cheep record = new(Environment.UserName, observation, DateTimeOffset.Now.ToUnixTimeSeconds());
                 db.Store(record);
             }
+            if (arguments["comment"].IsTrue)
+            {
+                //Checking for observation ID
+
+                //placeholder until i figure this out
+                string comment = arguments["<comment>"].ToString();
+            }
+            if (arguments["discussion"].IsTrue)
+            {
+                //Will add once comments are figured out
+            }
         }
     }
 }
