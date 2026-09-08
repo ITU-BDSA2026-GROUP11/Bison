@@ -12,6 +12,8 @@ namespace Bison.CLI
             Usage:
                 Bison read
                 Bison observe <observation>
+                Bison comment <id> <comment>
+                Bison discussion
                 Bison (-h | --help)
 
             Options:
@@ -34,13 +36,18 @@ namespace Bison.CLI
                 //Parses user input from <observation> to string
                 string observation = arguments["<observation>"].ToString();
 
+                //Get previous ID
+                var records = db.Read();
+                int nextID = records.Max(c => c.ID) + 1;
                 //Creating the Cheep and writing it to the CSVDatabase
-                Cheep record = new(Environment.UserName, observation, DateTimeOffset.Now.ToUnixTimeSeconds());
+                Cheep record = new(Environment.UserName, observation, DateTimeOffset.Now.ToUnixTimeSeconds(), nextID);
                 db.Store(record);
             }
             if (arguments["comment"].IsTrue)
             {
                 //Checking for observation ID
+                int id = Convert.ToInt32(arguments["<id>"]);
+
 
                 //placeholder until i figure this out
                 string comment = arguments["<comment>"].ToString();

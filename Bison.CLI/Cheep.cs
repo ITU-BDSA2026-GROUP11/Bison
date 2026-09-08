@@ -1,5 +1,5 @@
 
 
-public record Cheep(string Author, string Observation, long Timestamp);
+public record Cheep(string Author, string Observation, long Timestamp, int ID);
 
 //Cheep is defined here so that all classes uses the same type
