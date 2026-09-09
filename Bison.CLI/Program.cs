@@ -23,16 +23,17 @@ namespace Bison.CLI
         static void Main(string[] args)
         {
             IDatabaseRepository<Cheep> db = new CSVDatabase<Cheep>();
-
             var arguments = new Docopt().Apply(Usage, args, help: true);
 
             if (arguments!["read"].IsTrue)// the "!" supress the error: arguments may be null
             {
+                db.setFilePath("observation");
                 //UserInterface handles writing to the console
                 UserInterface.PrintObservations(db.Read());
             }
             if (arguments["observe"].IsTrue)
-            {
+            {   
+                db.setFilePath("observation");
                 //Parses user input from <observation> to string
                 string observation = arguments["<observation>"].ToString();
 
@@ -45,12 +46,22 @@ namespace Bison.CLI
             }
             if (arguments["comment"].IsTrue)
             {
+                db.setFilePath("observation");
                 //Checking for observation ID
-                int id = Convert.ToInt32(arguments["<id>"]);
+                string IDString = arguments["<id>"].ToString();
 
-
-                //placeholder until i figure this out
-                string comment = arguments["<comment>"].ToString();
+                if (db.doesIdExist(IDString))
+                {
+                    db.setFilePath("comment");
+                    string comment = arguments["<comment>"].ToString();
+                    Cheep record = new(Environment.UserName, comment, DateTimeOffset.Now.ToUnixTimeSeconds(), Convert.ToInt32(IDString));
+                    db.Store(record);
+                }
+                else
+                {
+                    Console.WriteLine("Sorry, this ID does not exist");
+                }
+                
             }
             if (arguments["discussion"].IsTrue)
             {
