@@ -13,7 +13,7 @@ namespace Bison.CLI
                 Bison read
                 Bison observe <observation>
                 Bison comment <id> <comment>
-                Bison discussion
+                Bison discussion <id>
                 Bison (-h | --help)
 
             Options:
@@ -65,7 +65,14 @@ namespace Bison.CLI
             }
             if (arguments["discussion"].IsTrue)
             {
-                //Will add once comments are figured out
+                db.setFilePath("observation");
+                //Checking for observation ID
+                string IDString = arguments["<id>"].ToString();
+                //get the specific observation with this ID
+
+                db.setFilePath("comment");
+                //UserInterface.PrintObservations(db.getComments(IDString));
+
             }
         }
     }

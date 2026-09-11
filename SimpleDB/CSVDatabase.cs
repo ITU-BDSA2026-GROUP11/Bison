@@ -1,12 +1,26 @@
 ﻿
 using CsvHelper;
+using Microsoft.VisualBasic;
 using System.Globalization;
+using System.Linq.Expressions;
 
 namespace SimpleDB;
 
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
     static string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
+    List<int> ids = new List<int>();
+    public void setFilePath(string fileType)
+    {
+        if(fileType == "observation")
+        {
+            filePath = Path.GetFullPath("bison_observe_cli_db.csv");
+        }
+        if (fileType == "comment")
+        {
+            filePath = Path.GetFullPath("bison_comments_cli_db.csv");
+        }
+    }
     public IEnumerable<T> Read(int? limit = null)
     {
         //Using CSVHelper to handle reading the CSV file
@@ -33,5 +47,34 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
             csv.NextRecord();
         }
     }
+
+    public Boolean doesIdExist(string id)
+    {
+        using (var reader = new StreamReader(File.OpenRead(filePath)))
+        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+        {
+            csv.Read();
+            csv.ReadHeader();
+
+            while(csv.Read())
+            {
+                if(csv.GetField("ID") == id)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public IEnumerable<T> getComments<T>(string ID, int? limit = null)
+    {
+        using (var reader = new StreamReader(File.OpenRead(filePath)))
+        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+        {
+            return csv.GetRecords<T>().ToList();// returns the records in a list
+        }
+    }
+
 }
 
