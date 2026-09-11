@@ -22,40 +22,47 @@ namespace Bison.CLI
 
         static void Main(string[] args)
         {
-            IDatabaseRepository<Cheep> db = new CSVDatabase<Cheep>();
+            IDatabaseRepository<Cheep> dbCheep = new CSVDatabase<Cheep>();
+            dbCheep.setFilePath("observation");
+            IDatabaseRepository<Comment> dbComment = new CSVDatabase<Comment>();
+            dbComment.setFilePath("comment");
             var arguments = new Docopt().Apply(Usage, args, help: true);
 
             if (arguments!["read"].IsTrue)// the "!" supress the error: arguments may be null
             {
-                db.setFilePath("observation");
                 //UserInterface handles writing to the console
-                UserInterface.PrintObservations(db.Read());
+                UserInterface.PrintObservations(dbCheep.Read());
             }
             if (arguments["observe"].IsTrue)
             {   
-                db.setFilePath("observation");
                 //Parses user input from <observation> to string
                 string observation = arguments["<observation>"].ToString();
 
                 //Get previous ID
-                var records = db.Read();
+                var records = dbCheep.Read();
                 int nextID = records.Max(c => c.ID) + 1;
                 //Creating the Cheep and writing it to the CSVDatabase
                 Cheep record = new(Environment.UserName, observation, DateTimeOffset.Now.ToUnixTimeSeconds(), nextID);
-                db.Store(record);
+                dbCheep.Store(record);
             }
             if (arguments["comment"].IsTrue)
             {
-                db.setFilePath("observation");
                 //Checking for observation ID
                 string IDString = arguments["<id>"].ToString();
 
-                if (db.doesIdExist(IDString))
+                if (dbCheep.doesIdExist(IDString))
                 {
-                    db.setFilePath("comment");
-                    string comment = arguments["<comment>"].ToString();
-                    Cheep record = new(Environment.UserName, comment, DateTimeOffset.Now.ToUnixTimeSeconds(), Convert.ToInt32(IDString));
-                    db.Store(record);
+                var records = dbComment.Read();
+                int nextID = records.Max(c => c.ID) + 1;
+
+                    string commentText = arguments["<comment>"].ToString();
+                    Comment comment = new(){
+                        Author = Environment.UserName, 
+                        ObservationText = commentText, 
+                        Timestamp = DateTimeOffset.Now.ToUnixTimeSeconds(), 
+                        ID = nextID,
+                        ObservationID = Convert.ToInt32(IDString)};
+                    dbComment.Store(comment);
                 }
                 else
                 {
@@ -65,16 +72,17 @@ namespace Bison.CLI
             }
             if (arguments["discussion"].IsTrue)
             {
-                db.setFilePath("observation");
                 //Checking for observation ID
                 string IDString = arguments["<id>"].ToString();
                 //get the specific observation with this ID
+                IEnumerable<Observation> observation = dbCheep.getObservationUsingId(Convert.ToInt32(IDString));
+                //get the specific comment that reference this ID
+                IEnumerable<Comment> comments = dbComment.getCommentsUsingId(Convert.ToInt32(IDString));
 
-                db.setFilePath("comment");
-                //UserInterface.PrintObservations(db.getComments(IDString));
-
+                UserInterface.PrintCommentsUsingID(observation, comments);
             }
         }
+
     }
 }
 

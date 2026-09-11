@@ -12,7 +12,7 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
     List<int> ids = new List<int>();
     public void setFilePath(string fileType)
     {
-        if(fileType == "observation")
+        if (fileType == "observation")
         {
             filePath = Path.GetFullPath("bison_observe_cli_db.csv");
         }
@@ -56,9 +56,9 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
             csv.Read();
             csv.ReadHeader();
 
-            while(csv.Read())
+            while (csv.Read())
             {
-                if(csv.GetField("ID") == id)
+                if (csv.GetField("ID") == id)
                 {
                     return true;
                 }
@@ -67,12 +67,24 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
         }
     }
 
-    public IEnumerable<T> getComments<T>(string ID, int? limit = null)
+    public IEnumerable<Comment> getCommentsUsingId(int id, int? limit = null)
     {
         using (var reader = new StreamReader(File.OpenRead(filePath)))
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
-            return csv.GetRecords<T>().ToList();// returns the records in a list
+
+            return csv.GetRecords<Comment>().Where(c => c.ObservationID == id).ToList();// returns the comment records in a list
+        }
+    }
+
+
+    public IEnumerable<Observation> getObservationUsingId(int id, int? limit = null)
+    {
+        using (var reader = new StreamReader(File.OpenRead(filePath)))
+        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+        {
+
+            return csv.GetRecords<Observation>().Where(c => c.ID == id).ToList();// returns the observation records in a list
         }
     }
 
