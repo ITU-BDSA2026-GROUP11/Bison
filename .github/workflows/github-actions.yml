@@ -19,6 +19,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore -- Bison.CLI
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore -- Bison.CLI
     - name: Test
       run: dotnet test --no-build --verbosity normal
