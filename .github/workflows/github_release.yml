@@ -1,1 +1,32 @@
-name
+name: release
+
+on:
+  push:
+    tag: ['v*']
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+    permissions:
+      contents: read
+      issues: write
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore -- Bison.CLI
+    - name: Build
+      run: dotnet build --no-restore -- Bison.CLI
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    - name: create-release
+      run: 
+    - name: Publish step
+      run: dotnet Publish -c release
