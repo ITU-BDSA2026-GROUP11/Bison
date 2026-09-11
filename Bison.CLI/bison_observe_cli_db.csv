@@ -1,10 +1,13 @@
-Author,Observation,Timestamp
-ropf,"A bird at DR Byen",1690891760
-adho,"I think that is a Heron at DR Byen",1690978778
-edka,"Ardea cinerea at DR Byen",1690979858
-Samuel,"Heron at DR Byen ",1787924196
-Samuel,"Heron at DR Byen ",1787924210
-oliverriisschytt,"hello ",1788618025
-oliverriisschytt,"2.c complete ",1788620489
-oliverriisschytt,hello world,1788624958
-oliverriisschytt,2.d complete,1788625495
+Author,ObservationText,Timestamp,ID
+ropf,"A bird at DR Byen",1690891760, 0
+adho,"I think that is a Heron at DR Byen",1690978778,1
+edka,"Ardea cinerea at DR Byen",1690979858,2
+Samuel,"Heron at DR Byen ",1787924196,3
+Samuel,"Heron at DR Byen ",1787924210,4
+oliverriisschytt,"hello ",1788618025,5
+oliverriisschytt,"2.c complete ",1788620489,6
+oliverriisschytt,hello world,1788624958,7
+oliverriisschytt,2.d complete,1788625495,8
+Samuel,Id test,1788876752,9
+Samuel,Quick quality test,1788952722,10
+oliverriisschytt,hello,1789119677,11
