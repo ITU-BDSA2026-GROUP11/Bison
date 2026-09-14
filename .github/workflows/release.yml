@@ -1,0 +1,52 @@
+name: Release_workflow
+on:
+  push:
+    tags:
+      - 'v*' #triggers when a tag is "vxyz", where "xyz" could be "3.1.0". Any tag starting with 'v' is accepted.
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+
+      #This part only runs when the tests (above) have passed
+
+      - name: publish Windows
+        run: dotnet publish Bison.CLI/Bison.CLI.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish/win-x64
+
+      - name: publish MacOS
+        run: dotnet publish Bison.CLI/Bison.CLI.csproj -c Release -r osx-x64 --self-contained false -p:PublishSingleFile=true -o publish/osx-x64
+
+      - name: publish Linux
+        run: dotnet publish Bison.CLI/Bison.CLI.csproj -c Release -r linux-x64 --self-contained false -p:PublishSingleFile=true -o publish/linux-x64
+
+
+      - name: Zip executables
+        run: |
+          cd publish/win-x64 && zip -r ../../Bison-win-x64.zip . && cd ../..
+          cd publish/osx-x64 && zip -r ../../Bison-osx-x64.zip . && cd ../..
+          cd publish/linux-x64 && zip -r ../../Bison-linux-x64.zip . && cd ../..
+
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            Bison-win-x64.zip
+            Bison-osx-x64.zip
+            Bison-linux-x64.zip
