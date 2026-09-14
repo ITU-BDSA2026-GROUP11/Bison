@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../SimpleDB/SimpleDB.csproj" />
+    <PackageReference Include="docopt.net" Version="0.8.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="docopt.net" Version="0.8.3" />
+    <ProjectReference Include="../SimpleDB/SimpleDB.csproj" />
   </ItemGroup>
 
 </Project>
