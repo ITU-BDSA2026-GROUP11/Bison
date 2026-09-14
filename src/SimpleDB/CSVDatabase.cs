@@ -20,6 +20,10 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
         {
             filePath = Path.GetFullPath("bison_comments_cli_db.csv");
         }
+        if (fileType == "test")
+        {
+            filePath = Path.GetFullPath("bison_test.csv");
+        }
     }
     public IEnumerable<T> Read(int? limit = null)
     {
@@ -34,10 +38,12 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
     public void Store(T record)
     {
         //Using CSVHelper to handle writing to CSV file
+        bool newFile = !File.Exists(filePath);
+
         using (var writer = new StreamWriter(filePath, true))
         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
         {
-            if (!File.Exists(filePath))//checks if the filePath exists
+            if (newFile)//Checks if file exists
             {
                 csv.WriteHeader<T>();
                 csv.NextRecord();
@@ -48,23 +54,35 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
         }
     }
 
-    public Boolean doesIdExist(string id)
+    public bool doesIdExist(string id)
     {
-        using (var reader = new StreamReader(File.OpenRead(filePath)))
-        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+        if (!File.Exists(filePath))
         {
-            csv.Read();
-            csv.ReadHeader();
-
-            while (csv.Read())
-            {
-                if (csv.GetField("ID") == id)
-                {
-                    return true;
-                }
-            }
             return false;
         }
+
+        var fileInfo = new FileInfo(filePath);
+
+        if (fileInfo.Length == 0)
+        {
+            return false;
+        }
+
+        using var reader = new StreamReader(File.OpenRead(filePath));
+        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+
+        csv.Read();
+        csv.ReadHeader();
+
+        while (csv.Read())
+        {
+            if (csv.GetField("ID") == id)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public IEnumerable<Comment> getCommentsUsingId(int id, int? limit = null)
