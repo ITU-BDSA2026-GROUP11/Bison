@@ -21,13 +21,11 @@ These Commands should be run while in the Bison folder (project root)
    ```sh
    dotnet run observe <observation>
    ```
-5. Writing a comment to the CSV comment file
-   Where id is an observation id, and comment is text
+5. Writing a comment to the CSV comment file - Where id is an observation id, and comment is text
    ```sh
    dotnet run comment <id> <comment>
    ```
-6. Displaying all comment relating to a observation
-   Where id is an observation id
+6. Displaying all comment relating to a observation - Where id is an observation id
    ```sh
    dotnet run discussion <id>
    ```
