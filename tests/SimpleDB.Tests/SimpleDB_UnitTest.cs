@@ -1,93 +1,132 @@
-using Bison.CLI;
+using SimpleDB;
 
 namespace SimpleDB.Tests;
 
-public class SimpleDB_UnitTest
+public class SimpleDB_UnitTest : IDisposable
 {
+    private readonly CSVDatabase db;
+    private readonly string observationFilePath;
+
+    public SimpleDB_UnitTest()
+    {
+        db = CSVDatabase.Instance;
+
+        observationFilePath =
+            Path.GetFullPath("bison_observe_cli_db.csv");
+
+        // Start each test with a clean observation database
+        if (File.Exists(observationFilePath))
+        {
+            File.Delete(observationFilePath);
+        }
+    }
+
     [Fact]
-    public void DoesIdExist_ReturnsFalse_ForNonExistingId()
+    public void DoesObservationIdExist_ReturnsFalse_ForNonExistingId()
     {
         // Arrange
-        var db = new CSVDatabase<Cheep>();
-        db.setFilePath("test");
-
         File.WriteAllText(
-        Path.GetFullPath("bison_test.csv"),
-        "Author,ObservationText,Timestamp,ID\n" +
-        "Oliver,Penguin,12345,1\n"
+            observationFilePath,
+            "Author,ObservationText,Timestamp,ID\n" +
+            "Oliver,Penguin,12345,1\n"
         );
 
         // Act
-        bool result = db.doesIdExist("999");
+        bool result = db.DoesObservationIdExist(999);
 
         // Assert
         Assert.False(result);
     }
 
     [Fact]
-    public void DoesIdExist_ReturnsTrue_ForExistingId()
+    public void DoesObservationIdExist_ReturnsTrue_ForExistingId()
     {
-        var db = new CSVDatabase<Cheep>();
-        db.setFilePath("test");
-
+        // Arrange
         File.WriteAllText(
-            Path.GetFullPath("bison_test.csv"),
+            observationFilePath,
             "Author,ObservationText,Timestamp,ID\n" +
             "Oliver,Penguin,12345,1\n"
         );
 
-        bool result = db.doesIdExist("1");
+        // Act
+        bool result = db.DoesObservationIdExist(1);
 
+        // Assert
         Assert.True(result);
     }
 
-
-    //Testing Store and Retrieve methods
     [Fact]
-    public void Store_Then_Read_ReturnsStoredObservation()
+    public void StoreObservation_Then_ReadObservations_ReturnsStoredObservation()
     {
-        var db = new CSVDatabase<Cheep>();
-        db.setFilePath("test");
+        // Arrange
+        var observation = new Observation
+        {
+            Author = "Oliver",
+            ObservationText = "Penguin",
+            Timestamp = 12345,
+            ID = 1
+        };
 
-        File.Delete(Path.GetFullPath("bison_test.csv"));
+        // Act
+        db.StoreObservation(observation);
 
-        var cheep = new Cheep(
-            "Oliver",
+        var result =
+            db.ReadObservations().ToList();
+
+        // Assert
+        Assert.Single(result);
+
+        Assert.Equal(
             "Penguin",
-            12345,
-            1
+            result[0].ObservationText
         );
 
-        db.Store(cheep);
+        Assert.Equal(
+            "Oliver",
+            result[0].Author
+        );
 
-        var result = db.Read().ToList();
-
-        Assert.Single(result);
-        Assert.Equal("Penguin", result[0].ObservationText);
+        Assert.Equal(
+            1,
+            result[0].ID
+        );
     }
 
     [Fact]
     public void GetObservationUsingId_ReturnsCorrectObservation()
     {
-        var db = new CSVDatabase<Cheep>();
-        db.setFilePath("test");
-
+        // Arrange
         File.WriteAllText(
-            Path.GetFullPath("bison_test.csv"),
+            observationFilePath,
             "Author,ObservationText,Timestamp,ID\n" +
             "Oliver,Penguin,12345,1\n" +
             "Oliver,Seal,12346,2\n"
         );
 
-        var result = db.getObservationUsingId(2);
+        // Act
+        var result =
+            db.GetObservationUsingId(2).ToList();
 
+        // Assert
         Assert.Single(result);
 
         Assert.Equal(
             "Seal",
-            result.First().ObservationText
+            result[0].ObservationText
+        );
+
+        Assert.Equal(
+            2,
+            result[0].ID
         );
     }
 
-
+    public void Dispose()
+    {
+        // Clean up after every test
+        if (File.Exists(observationFilePath))
+        {
+            File.Delete(observationFilePath);
+        }
+    }
 }

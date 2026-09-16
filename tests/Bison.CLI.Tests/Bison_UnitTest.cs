@@ -5,15 +5,11 @@ namespace Bison.CLI.Tests;
 public class Bison_UnitTest
 {
     [Fact]
-    public void CommentWithNonExistingObservationIdIsRejected()
+    public void NonExistingObservationIdReturnsFalse()
     {
-        var db = new CSVDatabase<Cheep>();
+        var db = CSVDatabase.Instance;
 
-        db.setFilePath("test");
-
-        File.WriteAllText("bison_test.csv", "");
-
-        bool exists = db.doesIdExist("99999");
+        bool exists = db.DoesObservationIdExist(99999);
 
         Assert.False(exists);
     }
@@ -21,14 +17,32 @@ public class Bison_UnitTest
     [Fact]
     public void NextIdIsOneGreaterThanHighestExistingId()
     {
-        var records = new List<Cheep>
-    {
-        new("A","Obs1",0,1),
-        new("B","Obs2",0,2),
-        new("C","Obs3",0,3)
-    };
+        var records = new List<Observation>
+        {
+            new()
+            {
+                Author = "A",
+                ObservationText = "Obs1",
+                Timestamp = 0,
+                ID = 1
+            },
+            new()
+            {
+                Author = "B",
+                ObservationText = "Obs2",
+                Timestamp = 0,
+                ID = 2
+            },
+            new()
+            {
+                Author = "C",
+                ObservationText = "Obs3",
+                Timestamp = 0,
+                ID = 3
+            }
+        };
 
-        int nextId = records.Max(c => c.ID) + 1;
+        int nextId = records.Max(o => o.ID) + 1;
 
         Assert.Equal(4, nextId);
     }
@@ -39,11 +53,8 @@ public class Bison_UnitTest
         long timestamp = 1788959685;
 
         var date =
-            DateTimeOffset
-                .FromUnixTimeSeconds(timestamp);
+            DateTimeOffset.FromUnixTimeSeconds(timestamp);
 
         Assert.Equal(2026, date.Year);
     }
-
-
 }
