@@ -1,7 +1,7 @@
 # Bison.CLI
 
 ### Commands
-These Commands should be run while in the Bison folder (project root)
+These commands can be run while in the Bison folder (project root)
 1. Building the project
    ```sh
    dotnet build
@@ -11,21 +11,28 @@ These Commands should be run while in the Bison folder (project root)
    dotnet test
    ```
 
-   These Commands should be run while in the Bison.CLI folder
-3. Reading from CSV file
+   These commands can be run while in the Bison.CLI folder
+3. Building the project
+   ```sh
+   dotnet build
+   ```
+4. Reading from CSV file
    ```sh
    dotnet run read
    ```
-4. Writing to the CSV observe file
-   where observation is text
+5. Writing to the CSV observe file
    ```sh
-   dotnet run observe <observation>
+   dotnet run observe <observation> <location>
    ```
-5. Writing a comment to the CSV comment file - Where id is an observation id, and comment is text
+6. Writing a comment to the CSV comment file
    ```sh
    dotnet run comment <id> <comment>
    ```
-6. Displaying all comment relating to a observation - Where id is an observation id
+7. Displaying all comment relating to a observation
    ```sh
    dotnet run discussion <id>
+   ```
+6. Displaying all observations relating to a location
+   ```sh
+   dotnet run location <location>
    ```
