@@ -1,17 +1,17 @@
-Author,ObservationText,Timestamp,ID
-ropf,"A bird at DR Byen",1690891760, 0
-adho,"I think that is a Heron at DR Byen",1690978778,1
-edka,"Ardea cinerea at DR Byen",1690979858,2
-Samuel,"Heron at DR Byen ",1787924196,3
-Samuel,"Heron at DR Byen ",1787924210,4
-oliverriisschytt,"hello ",1788618025,5
-oliverriisschytt,"2.c complete ",1788620489,6
-oliverriisschytt,hello world,1788624958,7
-oliverriisschytt,2.d complete,1788625495,8
-Samuel,Id test,1788876752,9
-Samuel,Quick quality test,1788952722,10
-oliverriisschytt,hello,1789119677,11
-
-oliverriisschytt,Merge3.2.aWorked,1789393203,12
-oliverriisschytt,3.2.b_test,1789551341,13
-oliverriisschytt,3.2.b everything works,1789556501,14
+Author,ObservationText,Timestamp,ID,Location
+ropf,"A bird at DR Byen",1690891760, 0,x
+adho,"I think that is a Heron at DR Byen",1690978778,1,x
+edka,"Ardea cinerea at DR Byen",1690979858,2,x
+Samuel,"Heron at DR Byen ",1787924196,3,x
+Samuel,"Heron at DR Byen ",1787924210,4,x
+oliverriisschytt,"hello ",1788618025,5,x
+oliverriisschytt,"2.c complete ",1788620489,6,x
+oliverriisschytt,hello world,1788624958,7,x
+oliverriisschytt,2.d complete,1788625495,8,x
+Samuel,Id test,1788876752,9,x
+Samuel,Quick quality test,1788952722,10,x
+oliverriisschytt,hello,1789119677,11,x
+oliverriisschytt,Merge3.2.aWorked,1789393203,12,x
+oliverriisschytt,3.2.b_test,1789551341,13,x
+oliverriisschytt,3.2.b everything works,1789556501,14,x
+oliverriisschytt,3.2.c Works?,1789558721,15,Denmark

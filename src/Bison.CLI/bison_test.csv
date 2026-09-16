@@ -1,4 +1,4 @@
-ObservationID,Author,ObservationText,Timestamp,ID
-2,Samuel,First test to see if still works,1788959685,0
-2,Samuel,Second test to see if still works,1788959920,1
-2,oliverriisschytt,testComment,1789122671,2
+ObservationID,Author,ObservationText,Timestamp,ID,Location
+2,Samuel,First test to see if still works,1788959685,0,x
+2,Samuel,Second test to see if still works,1788959920,1,x
+2,oliverriisschytt,testComment,1789122671,2,x
