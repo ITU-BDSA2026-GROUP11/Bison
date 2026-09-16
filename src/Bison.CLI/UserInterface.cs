@@ -5,7 +5,7 @@ namespace Bison.CLI
     public static class UserInterface
     {
 
-        public static void PrintObservations(IEnumerable<Cheep> observation)
+        public static void PrintObservations(IEnumerable<Observation> observation)
         {
 
             //Reading the Cheeps from the CSVDatabase
@@ -18,7 +18,7 @@ namespace Bison.CLI
             }
         }
 
-        public static void PrintCommentsUsingID(IEnumerable<Observation> observation ,IEnumerable<Comment> comment)
+        public static void PrintCommentsUsingID(IEnumerable<Observation> observation, IEnumerable<Comment> comment)
         {
 
             foreach (var recordObservation in observation)
@@ -36,6 +36,12 @@ namespace Bison.CLI
                 var timeFormatted = observeTime.ToString("dd'/'MM'/'yy HH:mm:ss");
                 Console.WriteLine("(comment) " + recordComment.Author + " @ " + timeFormatted + ": " + recordComment.ObservationText);
             }
+        }
+
+        //For printing Errors in console to the user
+        public static void PrintError(string message)
+        {
+            Console.WriteLine(message);
         }
 
 

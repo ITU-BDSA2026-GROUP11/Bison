@@ -1,13 +1,10 @@
-﻿using System;
+﻿using DocoptNet;
 using SimpleDB;
-using DocoptNet;//this is the CLI console parser (parses user input)
-
 
 namespace Bison.CLI
 {
     class Program
     {
-        //This string is the contains info for DocoptNet and shows available commmands
         private const string Usage = @"
             Usage:
                 Bison read
@@ -22,67 +19,147 @@ namespace Bison.CLI
 
         static void Main(string[] args)
         {
-            IDatabaseRepository<Cheep> dbCheep = new CSVDatabase<Cheep>();
-            dbCheep.setFilePath("observation");
-            IDatabaseRepository<Comment> dbComment = new CSVDatabase<Comment>();
-            dbComment.setFilePath("comment");
-            var arguments = new Docopt().Apply(Usage, args, help: true);
+            // Get the single CSVDatabase instance
+            var db = CSVDatabase.Instance;
 
-            if (arguments!["read"].IsTrue)// the "!" supress the error: arguments may be null
+            // Parse command line arguments with DocoptNet
+            var arguments = new Docopt().Apply(
+                Usage,
+                args,
+                help: true
+            );
+
+            // READ------------------------------------------------
+
+            if (arguments!["read"].IsTrue)
             {
-                //UserInterface handles writing to the console
-                UserInterface.PrintObservations(dbCheep.Read());
-            }
-            if (arguments["observe"].IsTrue)
-            {   
-                //Parses user input from <observation> to string
-                string observation = arguments["<observation>"].ToString();
+                var observations = db.ReadObservations();
 
-                //Get previous ID
-                var records = dbCheep.Read();
-                int nextID = records.Max(c => c.ID) + 1;
-                //Creating the Cheep and writing it to the CSVDatabase
-                Cheep record = new(Environment.UserName, observation, DateTimeOffset.Now.ToUnixTimeSeconds(), nextID);
-                dbCheep.Store(record);
+                UserInterface.PrintObservations(observations);
+
+                return;
             }
+
+            // OBSERVE------------------------------------------------
+
+            if (arguments["observe"].IsTrue)
+            {
+                string observationText =
+                    arguments["<observation>"].ToString();
+
+                var observations =
+                    db.ReadObservations();
+
+                int nextID = observations.Any()
+                    ? observations.Max(o => o.ID) + 1
+                    : 1;
+
+                Observation observation = new()
+                {
+                    Author = Environment.UserName,
+                    ObservationText = observationText,
+                    Timestamp =
+                        DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    ID = nextID
+                };
+
+                db.StoreObservation(observation);
+
+                return;
+            }
+
+            // COMMENT------------------------------------------------
+
+
             if (arguments["comment"].IsTrue)
             {
-                //Checking for observation ID
-                string IDString = arguments["<id>"].ToString();
+                string idText =
+                    arguments["<id>"].ToString();
 
-                if (dbCheep.doesIdExist(IDString))
+                // Validate that the ID is actually a number
+                if (!int.TryParse(idText, out int observationId))
                 {
-                var records = dbComment.Read();
-                int nextID = records.Max(c => c.ID) + 1;
+                    UserInterface.PrintError(
+                        "The observation ID must be a number."
+                    );
 
-                    string commentText = arguments["<comment>"].ToString();
-                    Comment comment = new(){
-                        Author = Environment.UserName, 
-                        ObservationText = commentText, 
-                        Timestamp = DateTimeOffset.Now.ToUnixTimeSeconds(), 
-                        ID = nextID,
-                        ObservationID = Convert.ToInt32(IDString)};
-                    dbComment.Store(comment);
+                    return;
                 }
-                else
+
+                // Check that the observation exists
+                if (!db.DoesObservationIdExist(observationId))
                 {
-                    Console.WriteLine("Sorry, this ID does not exist");
+                    UserInterface.PrintError(
+                        "Sorry, this observation ID does not exist."
+                    );
+
+                    return;
                 }
-                
+
+                string commentText =
+                    arguments["<comment>"].ToString();
+
+                var comments =
+                    db.ReadComments();
+
+                int nextID = comments.Any()
+                    ? comments.Max(c => c.ID) + 1
+                    : 1;
+
+                Comment comment = new()
+                {
+                    Author = Environment.UserName,
+                    ObservationText = commentText,
+                    Timestamp =
+                        DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    ID = nextID,
+                    ObservationID = observationId
+                };
+
+                db.StoreComment(comment);
+
+                return;
             }
+
+
+            // DISCUSSION------------------------------------------------
+
             if (arguments["discussion"].IsTrue)
             {
-                //Checking for observation ID
-                string IDString = arguments["<id>"].ToString();
-                //get the specific observation with this ID
-                IEnumerable<Observation> observation = dbCheep.getObservationUsingId(Convert.ToInt32(IDString));
-                //get the specific comment that reference this ID
-                IEnumerable<Comment> comments = dbComment.getCommentsUsingId(Convert.ToInt32(IDString));
+                string idText =
+                    arguments["<id>"].ToString();
 
-                UserInterface.PrintCommentsUsingID(observation, comments);
+                // Validate ID
+                if (!int.TryParse(idText, out int observationId))
+                {
+                    UserInterface.PrintError(
+                        "The observation ID must be a number."
+                    );
+
+                    return;
+                }
+
+                // Check whether observation exists
+                if (!db.DoesObservationIdExist(observationId))
+                {
+                    UserInterface.PrintError(
+                        "Sorry, this observation ID does not exist."
+                    );
+
+                    return;
+                }
+
+                var observation =
+                    db.GetObservationUsingId(observationId);
+
+                var comments =
+                    db.GetCommentsUsingId(observationId);
+
+                UserInterface.PrintCommentsUsingID(
+                    observation,
+                    comments
+                );
             }
         }
-
     }
 }
-
