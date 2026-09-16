@@ -1,5 +1,6 @@
-ObservationID,Author,ObservationText,Timestamp,ID
-2,Samuel,First test to see if still works,1788959685,0
-2,Samuel,Second test to see if still works,1788959920,1
-2,oliverriisschytt,testComment,1789122671,2
-14,oliverriisschytt,3.2.b works,1789556531,3
+ObservationID,Author,ObservationText,Timestamp,ID,Location
+2,Samuel,First test to see if still works,1788959685,0,x
+2,Samuel,Second test to see if still works,1788959920,1,x
+2,oliverriisschytt,testComment,1789122671,2,x
+14,oliverriisschytt,3.2.b works,1789556531,3,x
+15,oliverriisschytt,3.2.b works,1789559115,4,

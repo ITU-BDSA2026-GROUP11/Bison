@@ -157,4 +157,16 @@ public sealed class CSVDatabase
         csv.WriteRecord(record);
         csv.NextRecord();
     }
+
+    public IEnumerable<Observation> GetObservationsByLocation(string location)
+    {
+        return ReadObservations()
+            .Where(observation =>
+                observation.Location.Equals(
+                    location,
+                    StringComparison.OrdinalIgnoreCase
+                )
+            );
+    }
+
 }

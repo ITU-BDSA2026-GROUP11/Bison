@@ -121,6 +121,49 @@ public class SimpleDB_UnitTest : IDisposable
         );
     }
 
+    [Fact]
+    public void GetObservationsByLocation_ReturnsOnlyMatchingObservations()
+    {
+        var db = CSVDatabase.Instance;
+
+        db.StoreObservation(new Observation
+        {
+            Author = "Oliver",
+            ObservationText = "Penguin",
+            Timestamp = 1,
+            ID = 1,
+            Location = "Copenhagen Zoo"
+        });
+
+        db.StoreObservation(new Observation
+        {
+            Author = "Oliver",
+            ObservationText = "Seal",
+            Timestamp = 2,
+            ID = 2,
+            Location = "Odense Zoo"
+        });
+
+        var result =
+            db.GetObservationsByLocation("Copenhagen Zoo")
+              .ToList();
+
+        Assert.Single(result);
+        Assert.Equal("Penguin", result[0].ObservationText);
+    }
+
+    [Fact]
+    public void GetObservationsByLocation_ReturnsEmpty_ForUnknownLocation()
+    {
+        var db = CSVDatabase.Instance;
+
+        var result =
+            db.GetObservationsByLocation("Moon")
+              .ToList();
+
+        Assert.Empty(result);
+    }
+
     public void Dispose()
     {
         // Clean up after every test

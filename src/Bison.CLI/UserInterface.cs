@@ -5,16 +5,16 @@ namespace Bison.CLI
     public static class UserInterface
     {
 
-        public static void PrintObservations(IEnumerable<Observation> observation)
+        public static void PrintObservations(IEnumerable<Observation> observations)
         {
-
-            //Reading the Cheeps from the CSVDatabase
-            foreach (var record in observation)
+            foreach (var record in observations)
             {
-                //Formatting the Cheep and printing it to console
                 var observeTime = DateTimeOffset.FromUnixTimeSeconds(record.Timestamp).ToLocalTime();
-                var timeFormatted = observeTime.ToString("dd'/'MM'/'yy HH:mm:ss");
-                Console.WriteLine(record.Author + " @ " + timeFormatted + ": " + record.ObservationText);
+                var timeFormatted = observeTime.ToString("dd/MM/yy HH:mm:ss");
+                Console.WriteLine(
+                    record.Author + " @ " + timeFormatted +
+                    " [" + record.Location + "]-" + "ID[" + record.ID +
+                    "]: " + record.ObservationText);
             }
         }
 
@@ -25,7 +25,11 @@ namespace Bison.CLI
             {
                 var observeTime = DateTimeOffset.FromUnixTimeSeconds(recordObservation.Timestamp).ToLocalTime();
                 var timeFormatted = observeTime.ToString("dd'/'MM'/'yy HH:mm:ss");
-                Console.WriteLine(recordObservation.Author + " @ " + timeFormatted + ": " + recordObservation.ObservationText);
+                Console.WriteLine(
+                    recordObservation.Author + " @ " + timeFormatted +
+                    " [" + recordObservation.Location + "]-" +
+                    "ID[" + recordObservation.ID + "]: " +
+                    recordObservation.ObservationText);
             }
 
             //Reading the Cheeps from the CSVDatabase
@@ -34,7 +38,10 @@ namespace Bison.CLI
                 //Formatting the Cheep and printing it to console
                 var observeTime = DateTimeOffset.FromUnixTimeSeconds(recordComment.Timestamp).ToLocalTime();
                 var timeFormatted = observeTime.ToString("dd'/'MM'/'yy HH:mm:ss");
-                Console.WriteLine("(comment) " + recordComment.Author + " @ " + timeFormatted + ": " + recordComment.ObservationText);
+                Console.WriteLine(
+                    "(comment) " + recordComment.Author +
+                    " @ " + timeFormatted + ": " +
+                    recordComment.ObservationText);
             }
         }
 
