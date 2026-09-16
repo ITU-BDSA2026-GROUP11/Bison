@@ -8,7 +8,8 @@ namespace Bison.CLI
         private const string Usage = @"
             Usage:
                 Bison read
-                Bison observe <observation>
+                Bison observe <observation> <location>
+                Bison location <location>
                 Bison comment <id> <comment>
                 Bison discussion <id>
                 Bison (-h | --help)
@@ -47,6 +48,9 @@ namespace Bison.CLI
                 string observationText =
                     arguments["<observation>"].ToString();
 
+                string location =
+                    arguments["<location>"].ToString();
+
                 var observations =
                     db.ReadObservations();
 
@@ -58,12 +62,28 @@ namespace Bison.CLI
                 {
                     Author = Environment.UserName,
                     ObservationText = observationText,
+                    Location = location,
                     Timestamp =
                         DateTimeOffset.Now.ToUnixTimeSeconds(),
                     ID = nextID
                 };
 
                 db.StoreObservation(observation);
+
+                return;
+            }
+            
+            // LOCATION------------------------------------------------
+
+            if (arguments["location"].IsTrue)
+            {
+                string location =
+                    arguments["<location>"].ToString();
+
+                var observations =
+                    db.GetObservationsByLocation(location);
+
+                UserInterface.PrintObservations(observations);
 
                 return;
             }
