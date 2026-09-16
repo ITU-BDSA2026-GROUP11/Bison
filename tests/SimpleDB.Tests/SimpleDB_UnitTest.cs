@@ -27,8 +27,8 @@ public class SimpleDB_UnitTest : IDisposable
         // Arrange
         File.WriteAllText(
             observationFilePath,
-            "Author,ObservationText,Timestamp,ID\n" +
-            "Oliver,Penguin,12345,1\n"
+            "Author,ObservationText,Timestamp,ID,Location\n" +
+            "Oliver,Penguin,12345,1,location x\n"
         );
 
         // Act
@@ -44,8 +44,8 @@ public class SimpleDB_UnitTest : IDisposable
         // Arrange
         File.WriteAllText(
             observationFilePath,
-            "Author,ObservationText,Timestamp,ID\n" +
-            "Oliver,Penguin,12345,1\n"
+            "Author,ObservationText,Timestamp,ID,Location\n" +
+            "Oliver,Penguin,12345,1,location x\n"
         );
 
         // Act
@@ -64,7 +64,8 @@ public class SimpleDB_UnitTest : IDisposable
             Author = "Oliver",
             ObservationText = "Penguin",
             Timestamp = 12345,
-            ID = 1
+            ID = 1,
+            Location = "location x"
         };
 
         // Act
@@ -90,6 +91,11 @@ public class SimpleDB_UnitTest : IDisposable
             1,
             result[0].ID
         );
+        
+        Assert.Equal(
+            "location x",
+            result[0].Location
+        );
     }
 
     [Fact]
@@ -98,9 +104,9 @@ public class SimpleDB_UnitTest : IDisposable
         // Arrange
         File.WriteAllText(
             observationFilePath,
-            "Author,ObservationText,Timestamp,ID\n" +
-            "Oliver,Penguin,12345,1\n" +
-            "Oliver,Seal,12346,2\n"
+            "Author,ObservationText,Timestamp,ID,Location\n" +
+            "Oliver,Penguin,12345,1,location x\n" +
+            "Oliver,Seal,12346,2,location x\n"
         );
 
         // Act
