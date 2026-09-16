@@ -1,110 +1,160 @@
-﻿
-using CsvHelper;
-using Microsoft.VisualBasic;
+﻿using CsvHelper;
 using System.Globalization;
-using System.Linq.Expressions;
 
 namespace SimpleDB;
 
-public sealed class CSVDatabase<T> : IDatabaseRepository<T>
+public sealed class CSVDatabase
 {
-    static string filePath = Path.GetFullPath("bison_observe_cli_db.csv");
-    List<int> ids = new List<int>();
-    public void setFilePath(string fileType)
+    // Singleton instance
+    private static CSVDatabase? instance;
+
+    // Paths to the two CSV files
+    private readonly string observationFilePath;
+    private readonly string commentFilePath;
+
+    // Private constructor means nobody outside this class
+    // can create a new CSVDatabase object
+    private CSVDatabase()
     {
-        if (fileType == "observation")
-        {
-            filePath = Path.GetFullPath("bison_observe_cli_db.csv");
-        }
-        if (fileType == "comment")
-        {
-            filePath = Path.GetFullPath("bison_comments_cli_db.csv");
-        }
-        if (fileType == "test")
-        {
-            filePath = Path.GetFullPath("bison_test.csv");
-        }
-    }
-    public IEnumerable<T> Read(int? limit = null)
-    {
-        //Using CSVHelper to handle reading the CSV file
-        using (var reader = new StreamReader(File.OpenRead(filePath)))
-        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-        {
-            return csv.GetRecords<T>().ToList();// returns the records in a list
-        }
+        observationFilePath =
+            Path.GetFullPath("bison_observe_cli_db.csv");
+
+        commentFilePath =
+            Path.GetFullPath("bison_comments_cli_db.csv");
     }
 
-    public void Store(T record)
+    // The only way to access the database
+    public static CSVDatabase Instance
     {
-        //Using CSVHelper to handle writing to CSV file
-        bool newFile = !File.Exists(filePath);
-
-        using (var writer = new StreamWriter(filePath, true))
-        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+        get
         {
-            if (newFile)//Checks if file exists
-            {
-                csv.WriteHeader<T>();
-                csv.NextRecord();
-            }
-
-            csv.WriteRecord(record);
-            csv.NextRecord();
+            instance ??= new CSVDatabase();
+            return instance;
         }
     }
 
-    public bool doesIdExist(string id)
+    // Observations----------------------------------------------------
+    public IEnumerable<Observation> ReadObservations(int? limit = null)
+    {
+        return ReadFromFile<Observation>(
+            observationFilePath,
+            limit
+        );
+    }
+
+    public void StoreObservation(Observation observation)
+    {
+        StoreToFile(
+            observationFilePath,
+            observation
+        );
+    }
+
+    public bool DoesObservationIdExist(int id)
+    {
+        return ReadObservations()
+            .Any(observation => observation.ID == id);
+    }
+
+    public IEnumerable<Observation> GetObservationUsingId(int id)
+    {
+        return ReadObservations()
+            .Where(observation => observation.ID == id);
+    }
+
+
+    // Comments----------------------------------------------------
+
+    public IEnumerable<Comment> ReadComments(int? limit = null)
+    {
+        return ReadFromFile<Comment>(
+            commentFilePath,
+            limit
+        );
+    }
+
+    public void StoreComment(Comment comment)
+    {
+        StoreToFile(
+            commentFilePath,
+            comment
+        );
+    }
+
+    public IEnumerable<Comment> GetCommentsUsingId(int observationId)
+    {
+        return ReadComments()
+            .Where(comment =>
+                comment.ObservationID == observationId
+            );
+    }
+
+    // Generic CSV handling----------------------------------------------------
+
+    private IEnumerable<T> ReadFromFile<T>(
+        string filePath,
+        int? limit = null)
     {
         if (!File.Exists(filePath))
         {
-            return false;
+            return Enumerable.Empty<T>();
         }
 
-        var fileInfo = new FileInfo(filePath);
+        // Also handle an existing but empty file
+        FileInfo fileInfo = new(filePath);
 
         if (fileInfo.Length == 0)
         {
-            return false;
+            return Enumerable.Empty<T>();
         }
 
-        using var reader = new StreamReader(File.OpenRead(filePath));
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        using var reader =
+            new StreamReader(filePath);
 
-        csv.Read();
-        csv.ReadHeader();
+        using var csv =
+            new CsvReader(
+                reader,
+                CultureInfo.InvariantCulture
+            );
 
-        while (csv.Read())
+        var records =
+            csv.GetRecords<T>().ToList();
+
+        if (limit.HasValue)
         {
-            if (csv.GetField("ID") == id)
-            {
-                return true;
-            }
+            return records.Take(limit.Value);
         }
 
-        return false;
+        return records;
     }
 
-    public IEnumerable<Comment> getCommentsUsingId(int id, int? limit = null)
+    private void StoreToFile<T>(
+        string filePath,
+        T record)
     {
-        using (var reader = new StreamReader(File.OpenRead(filePath)))
-        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+        bool needsHeader =
+            !File.Exists(filePath)
+            || new FileInfo(filePath).Length == 0;
+
+        using var writer =
+            new StreamWriter(
+                filePath,
+                append: true
+            );
+
+        using var csv =
+            new CsvWriter(
+                writer,
+                CultureInfo.InvariantCulture
+            );
+
+        if (needsHeader)
         {
-
-            return csv.GetRecords<Comment>().Where(c => c.ObservationID == id).ToList();// returns the comment records in a list
+            csv.WriteHeader<T>();
+            csv.NextRecord();
         }
+
+        csv.WriteRecord(record);
+        csv.NextRecord();
     }
-
-
-    public IEnumerable<Observation> getObservationUsingId(int id, int? limit = null)
-    {
-        using (var reader = new StreamReader(File.OpenRead(filePath)))
-        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-        {
-
-            return csv.GetRecords<Observation>().Where(c => c.ID == id).ToList();// returns the observation records in a list
-        }
-    }
-
 }
-
