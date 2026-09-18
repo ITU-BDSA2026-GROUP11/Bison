@@ -21,7 +21,8 @@ namespace Bison.CLI
         static void Main(string[] args)
         {
             // Get the single CSVDatabase instance
-            var db = CSVDatabase.Instance;
+            var obs_db = CSVDatabase<Observation>.getInstance("bison_observe_cli_db.csv");
+            var evil_db = CSVDatabase<Comment>.getInstance("bison_comments_cli_db.csv");
 
             // Parse command line arguments with DocoptNet
             var arguments = new Docopt().Apply(
@@ -34,7 +35,7 @@ namespace Bison.CLI
 
             if (arguments!["read"].IsTrue)
             {
-                var observations = db.ReadObservations();
+                var observations = obs_db.Read();
 
                 UserInterface.PrintObservations(observations);
 
@@ -52,7 +53,7 @@ namespace Bison.CLI
                     arguments["<location>"].ToString();
 
                 var observations =
-                    db.ReadObservations();
+                    obs_db.Read();
 
                 int nextID = observations.Any()
                     ? observations.Max(o => o.ID) + 1
@@ -68,7 +69,7 @@ namespace Bison.CLI
                     ID = nextID
                 };
 
-                db.StoreObservation(observation);
+                obs_db.Store(observation);
 
                 return;
             }
@@ -80,8 +81,10 @@ namespace Bison.CLI
                 string location =
                     arguments["<location>"].ToString();
 
-                var observations =
-                    db.GetObservationsByLocation(location);
+                //var observations =
+                //    db.GetObservationsByLocation(location);
+                var observations = obs_db.Read().Where(observation => 
+                        observation.Location.Equals(location, StringComparison.OrdinalIgnoreCase));
 
                 UserInterface.PrintObservations(observations);
 
@@ -107,7 +110,8 @@ namespace Bison.CLI
                 }
 
                 // Check that the observation exists
-                if (!db.DoesObservationIdExist(observationId))
+                int checkID = int.Parse(idText);
+                if (!obs_db.Read().Any(observation => observation.ID == checkID))
                 {
                     UserInterface.PrintError(
                         "Sorry, this observation ID does not exist."
@@ -120,7 +124,7 @@ namespace Bison.CLI
                     arguments["<comment>"].ToString();
 
                 var comments =
-                    db.ReadComments();
+                    evil_db.Read();
 
                 int nextID = comments.Any()
                     ? comments.Max(c => c.ID) + 1
@@ -136,7 +140,7 @@ namespace Bison.CLI
                     ObservationID = observationId
                 };
 
-                db.StoreComment(comment);
+                evil_db.Store(comment);
 
                 return;
             }
@@ -160,7 +164,8 @@ namespace Bison.CLI
                 }
 
                 // Check whether observation exists
-                if (!db.DoesObservationIdExist(observationId))
+                int checkID = int.Parse(idText);
+                if (!obs_db.Read().Any(observation => observation.ID == checkID))
                 {
                     UserInterface.PrintError(
                         "Sorry, this observation ID does not exist."
@@ -170,10 +175,10 @@ namespace Bison.CLI
                 }
 
                 var observation =
-                    db.GetObservationUsingId(observationId);
+                    obs_db.Read().Where(observation => observation.ID == checkID);
 
                 var comments =
-                    db.GetCommentsUsingId(observationId);
+                    evil_db.Read().Where(comment => comment.ID == checkID);
 
                 UserInterface.PrintCommentsUsingID(
                     observation,

@@ -3,91 +3,83 @@ using System.Globalization;
 
 namespace SimpleDB;
 
-public sealed class CSVDatabase
+public sealed class CSVDatabase<T>: IDatabaseRepository<T>
 {
     // Singleton instance
-    private static CSVDatabase? instance;
+    private static CSVDatabase<T>? instance;
 
     // Paths to the two CSV files
-    private readonly string observationFilePath;
-    private readonly string commentFilePath;
+    private readonly string FilePath;
 
     // Private constructor means nobody outside this class
     // can create a new CSVDatabase object
-    private CSVDatabase()
+    private CSVDatabase(string FilePath)
     {
-        observationFilePath =
-            Path.GetFullPath("bison_observe_cli_db.csv");
-
-        commentFilePath =
-            Path.GetFullPath("bison_comments_cli_db.csv");
+        this.FilePath = Path.GetFullPath(FilePath);
     }
 
     // The only way to access the database
-    public static CSVDatabase Instance
+    public static CSVDatabase<T> getInstance(String FilePath)
     {
-        get
-        {
-            instance ??= new CSVDatabase();
-            return instance;
-        }
+        instance ??= new CSVDatabase<T>(FilePath);
+        return instance;
     }
 
     // Observations----------------------------------------------------
-    public IEnumerable<Observation> ReadObservations(int? limit = null)
+    public IEnumerable<T> Read(int? limit = null)
     {
-        return ReadFromFile<Observation>(
-            observationFilePath,
+        return ReadFromFile<T>(
+            FilePath,
             limit
         );
     }
 
-    public void StoreObservation(Observation observation)
+    public void Store(T record)
     {
         StoreToFile(
-            observationFilePath,
-            observation
+            FilePath,
+            record
         );
     }
 
-    public bool DoesObservationIdExist(int id)
-    {
-        return ReadObservations()
-            .Any(observation => observation.ID == id);
-    }
+    //public bool DoesObservationIdExist(int id)
+    //{
+    //    return ReadObservations()
+    //        .Any(observation => observation.ID == id);
+    //}
 
-    public IEnumerable<Observation> GetObservationUsingId(int id)
-    {
-        return ReadObservations()
-            .Where(observation => observation.ID == id);
-    }
+    //public IEnumerable<Observation> GetObservationUsingId(int id)
+    //{
+    //    return ReadObservations()
+    //        .Where(observation => observation.ID == id);
+    //}
 
 
     // Comments----------------------------------------------------
 
-    public IEnumerable<Comment> ReadComments(int? limit = null)
-    {
-        return ReadFromFile<Comment>(
-            commentFilePath,
-            limit
-        );
-    }
+    //public IEnumerable<Comment> ReadComments(int? limit = null)
+    //{
+    //    return ReadFromFile<Comment>(
+    //        commentFilePath,
+    //        limit
+    //    );
+    //}
 
-    public void StoreComment(Comment comment)
-    {
-        StoreToFile(
-            commentFilePath,
-            comment
-        );
-    }
+    //public void StoreComment(Comment comment)
+    //{
+    //    StoreToFile(
+    //        commentFilePath,
+    //        comment
+    //    );
+    //}
 
-    public IEnumerable<Comment> GetCommentsUsingId(int observationId)
-    {
-        return ReadComments()
-            .Where(comment =>
-                comment.ObservationID == observationId
-            );
-    }
+    //public IEnumerable<Comment> GetCommentsUsingId(int observationId)
+    //{
+    //    return ReadComments()
+    //        .Where(comment =>
+    //            comment.ObservationID == observationId
+    //        );
+    //}
 
     // Generic CSV handling----------------------------------------------------
 
@@ -158,15 +150,15 @@ public sealed class CSVDatabase
         csv.NextRecord();
     }
 
-    public IEnumerable<Observation> GetObservationsByLocation(string location)
-    {
-        return ReadObservations()
-            .Where(observation =>
-                observation.Location.Equals(
-                    location,
-                    StringComparison.OrdinalIgnoreCase
-                )
-            );
-    }
+    //public IEnumerable<Observation> GetObservationsByLocation(string location)
+    //{
+    //    return ReadObservations()
+    //        .Where(observation =>
+    //            observation.Location.Equals(
+    //                location,
+    //                StringComparison.OrdinalIgnoreCase
+    //            )
+    //        );
+    //}
 
 }
