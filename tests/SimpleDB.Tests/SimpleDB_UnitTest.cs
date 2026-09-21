@@ -4,12 +4,12 @@ namespace SimpleDB.Tests;
 
 public class SimpleDB_UnitTest : IDisposable
 {
-    private readonly CSVDatabase db;
+    private readonly CSVDatabase<Observation> db;
     private readonly string observationFilePath;
 
     public SimpleDB_UnitTest()
     {
-        db = CSVDatabase.Instance;
+        
 
         observationFilePath =
             Path.GetFullPath("bison_observe_cli_db.csv");
@@ -19,6 +19,7 @@ public class SimpleDB_UnitTest : IDisposable
         {
             File.Delete(observationFilePath);
         }
+        db = CSVDatabase<Observation>.getInstance("bison_observe_cli_db.csv");
     }
 
     [Fact]
@@ -32,7 +33,7 @@ public class SimpleDB_UnitTest : IDisposable
         );
 
         // Act
-        bool result = db.DoesObservationIdExist(999);
+        bool result = db.Read().Any(observation => observation.ID == 999);
 
         // Assert
         Assert.False(result);
@@ -49,7 +50,7 @@ public class SimpleDB_UnitTest : IDisposable
         );
 
         // Act
-        bool result = db.DoesObservationIdExist(1);
+        bool result = db.Read().Any(observation => observation.ID == 1);
 
         // Assert
         Assert.True(result);
@@ -69,10 +70,10 @@ public class SimpleDB_UnitTest : IDisposable
         };
 
         // Act
-        db.StoreObservation(observation);
+        db.Store(observation);
 
         var result =
-            db.ReadObservations().ToList();
+            db.Read().ToList();
 
         // Assert
         Assert.Single(result);
@@ -111,7 +112,7 @@ public class SimpleDB_UnitTest : IDisposable
 
         // Act
         var result =
-            db.GetObservationUsingId(2).ToList();
+            db.Read().Where(observation => observation.ID == 2).ToList();
 
         // Assert
         Assert.Single(result);
@@ -130,9 +131,9 @@ public class SimpleDB_UnitTest : IDisposable
     [Fact]
     public void GetObservationsByLocation_ReturnsOnlyMatchingObservations()
     {
-        var db = CSVDatabase.Instance;
+        var db = CSVDatabase<Observation>.getInstance("bison_observe_cli_db.csv");
 
-        db.StoreObservation(new Observation
+        db.Store(new Observation
         {
             Author = "Oliver",
             ObservationText = "Penguin",
@@ -141,7 +142,7 @@ public class SimpleDB_UnitTest : IDisposable
             Location = "Copenhagen Zoo"
         });
 
-        db.StoreObservation(new Observation
+        db.Store(new Observation
         {
             Author = "Oliver",
             ObservationText = "Seal",
@@ -151,7 +152,8 @@ public class SimpleDB_UnitTest : IDisposable
         });
 
         var result =
-            db.GetObservationsByLocation("Copenhagen Zoo")
+            db.Read().Where(observation => 
+                        observation.Location.Equals("Copenhagen Zoo"))
               .ToList();
 
         Assert.Single(result);
@@ -161,10 +163,10 @@ public class SimpleDB_UnitTest : IDisposable
     [Fact]
     public void GetObservationsByLocation_ReturnsEmpty_ForUnknownLocation()
     {
-        var db = CSVDatabase.Instance;
+        var db = CSVDatabase<Observation>.getInstance("bison_observe_cli_db.csv");
 
         var result =
-            db.GetObservationsByLocation("Moon")
+            db.Read().Where(observation => observation.Location.Equals("Moon"))
               .ToList();
 
         Assert.Empty(result);
