@@ -7,9 +7,9 @@ public class Bison_UnitTest
     [Fact]
     public void NonExistingObservationIdReturnsFalse()
     {
-        var db = CSVDatabase.Instance;
+        var db = CSVDatabase<Observation>.getInstance("bison_observe_cli_db.csv");
 
-        bool exists = db.DoesObservationIdExist(99999);
+        bool exists = db.Read().Any(observation => observation.ID == 99999);
 
         Assert.False(exists);
     }
