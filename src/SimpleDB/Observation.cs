@@ -1,6 +1,6 @@
 namespace SimpleDB;
 
-public class Observation
+public record Observation
 {
 
     public string Author { get; set; } = "";
