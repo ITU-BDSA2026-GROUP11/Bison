@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../SimpleDB/SimpleDB.csproj" />
     <EmbeddedResource Include="taxons/joined.csv" />
   </ItemGroup>
 
