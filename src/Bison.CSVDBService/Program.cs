@@ -1,6 +1,11 @@
 using SimpleDB;
+using Bison.CSVDBService;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<ITaxonomyRepository, TaxonomyRepository>();
+
 var app = builder.Build();
 var obs_db = CSVDatabase<Observation>.getInstance("../Bison.CLI/bison_observe_cli_db.csv");
 var evil_db = CSVDatabase<Comment>.getInstance("../Bison.CLI/bison_comments_cli_db.csv");
@@ -78,4 +83,38 @@ app.MapGet("/observations", () =>
     // endpoint shall return all observations that are stored in the CSV database as a 
     // list of JSON objects
 });
+// temp test for the taxonomy
+// use "dotnet run" while in Bison.CSVDBService
+using var scope = app.Services.CreateScope();
+
+var repo = scope.ServiceProvider.GetRequiredService<ITaxonomyRepository>();
+
+Console.WriteLine("Testing taxonomy repository...");
+
+var fiskehejre = repo.GetByVernacularName("Fiskehejre");
+
+if (fiskehejre == null)
+{
+    Console.WriteLine("Could not find Fiskehejre");
+}
+else
+{
+    Console.WriteLine($"Found: {fiskehejre.ScientificName}");
+
+    var parent = repo.GetSupertaxon(fiskehejre.TaxonId);
+
+    if (parent != null)
+    {
+        Console.WriteLine($"Parent: {parent.ScientificName}");
+
+        var children = repo.GetSubtaxons(parent.TaxonId);
+        Console.WriteLine($"Number of subtaxons: {children.Count}");
+    }
+    else
+    {
+        Console.WriteLine("No parent found");
+    }
+}
+
 app.Run();
+
