@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-   <ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../SimpleDB/SimpleDB.csproj" />
   </ItemGroup>
 
