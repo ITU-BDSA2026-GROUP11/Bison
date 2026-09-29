@@ -1,31 +1,49 @@
+// Creates the web application
 var builder = WebApplication.CreateBuilder(args);
 
+// Adds Razor Pages to the application
 builder.Services.AddRazorPages();
 
+// Tries to get the database path from the BISONDBPATH environment variable
 string? databasePath = Environment.GetEnvironmentVariable("BISONDBPATH");
 
+// If BISONDBPATH is not set, use bison.db in the temporary folder
 if (string.IsNullOrWhiteSpace(databasePath))
 {
     databasePath = Path.Combine(Path.GetTempPath(), "bison.db");
 }
 
+// Makes DBFacade available through dependency injection
 builder.Services.AddSingleton(new DBFacade(databasePath));
+
+// Makes ObservationService available when IObservationService is requested
 builder.Services.AddScoped<IObservationService, ObservationService>();
 
+// Builds the application
 var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
+    // Shows an error page if something goes wrong
     app.UseExceptionHandler("/Error");
 
-    // The default HSTS value is 30 days.
+    // Adds HTTP Strict Transport Security
     app.UseHsts();
 }
 
+// Redirects HTTP requests to HTTPS
 app.UseHttpsRedirection();
+
+// Allows the app to use static files like CSS and images
 app.UseStaticFiles();
+
+// Enables routing
 app.UseRouting();
+
+// Connects Razor Pages to their routes
 app.MapRazorPages();
+
+// Starts the application
 app.Run();
