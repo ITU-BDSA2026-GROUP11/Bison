@@ -1,38 +1,82 @@
-# Bison.CLI
+# Bison
 
-### Commands
-These commands can be run while in the Bison folder (project root)
-1. Building the project
-   ```sh
-   dotnet build
-   ```
-2. Testing the project
-   ```sh
-   dotnet test
-   ```
+## Build and test
 
-   These commands can be run while in the Bison.CLI folder
-3. Building the project
-   ```sh
-   dotnet build
-   ```
-4. Reading from CSV file
-   ```sh
-   dotnet run read
-   ```
-5. Writing to the CSV observe file
-   ```sh
-   dotnet run observe <observation> <location>
-   ```
-6. Writing a comment to the CSV comment file
-   ```sh
-   dotnet run comment <id> <comment>
-   ```
-7. Displaying all comment relating to a observation
-   ```sh
-   dotnet run discussion <id>
-   ```
-6. Displaying all observations relating to a location
-   ```sh
-   dotnet run location <location>
-   ```
+From the project root:
+
+```sh
+dotnet build
+```
+
+```sh
+dotnet test
+```
+
+## Bison.CLI
+
+From the `Bison.CLI` folder:
+
+```sh
+dotnet run read
+```
+
+```sh
+dotnet run observe <observation> <location>
+```
+
+```sh
+dotnet run comment <id> <comment>
+```
+
+```sh
+dotnet run discussion <id>
+```
+
+```sh
+dotnet run location <location>
+```
+
+## Bison.Razor
+
+From the `Bison.Razor` folder:
+
+Install SQLite package if needed:
+
+```sh
+dotnet add package Microsoft.Data.Sqlite
+```
+
+Create the database:
+
+```sh
+sqlite3 bison.db < schema.sql
+```
+
+```sh
+sqlite3 bison.db < dump.sql
+```
+
+Run on macOS/Linux:
+
+```sh
+BISONDBPATH=./bison.db dotnet run
+```
+
+Run on Windows PowerShell:
+
+```powershell
+$env:BISONDBPATH="./bison.db"
+dotnet run
+```
+
+The public timeline is available at:
+
+```text
+/
+```
+
+A user's timeline is available at:
+
+```text
+/<username>
+```
