@@ -46,7 +46,7 @@ Install SQLite package if needed:
 dotnet add package Microsoft.Data.Sqlite
 ```
 
-Create the database:
+Create and fill the database:
 
 ```sh
 sqlite3 bison.db < schema.sql
@@ -69,14 +69,32 @@ $env:BISONDBPATH="./bison.db"
 dotnet run
 ```
 
-The public timeline is available at:
+## Timelines
+
+Public timeline:
 
 ```text
-/
+/obs
 ```
 
-A user's timeline is available at:
+Public timeline with pagination:
 
 ```text
-/<username>
+/obs?page=2
 ```
+
+User timeline:
+
+```text
+/obs/<username>
+```
+
+User timeline with pagination:
+
+```text
+/obs/<username>?page=2
+```
+
+Each page contains at most 32 observations.
+
+If no page is specified, page 1 is used.
