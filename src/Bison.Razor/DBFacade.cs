@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 
+namespace Bison.Razor;
 public class DBFacade
 {
     // Stores the information needed to connect to the database

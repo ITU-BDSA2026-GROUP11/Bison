@@ -1,3 +1,6 @@
+namespace Bison.Razor;
+
+
 public class ObservationService : IObservationService
 {
     // Gives this service access to the database
