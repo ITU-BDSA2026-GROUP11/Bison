@@ -1,3 +1,5 @@
+namespace Bison.Razor;
+
 public record ObservationViewModel(string Author, string Message, string Timestamp);
 
 public interface IObservationService

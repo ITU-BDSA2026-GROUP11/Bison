@@ -1,9 +1,13 @@
 using SimpleDB;
+using Bison.Razor;
 
-namespace Bison.CLI.Tests;
+
+namespace Bison.Razor.Tests;
 
 public class Bison_UnitTest
 {
+    
+
     [Fact]
     public void NonExistingObservationIdReturnsFalse()
     {

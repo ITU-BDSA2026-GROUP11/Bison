@@ -1,3 +1,5 @@
+using Bison.Razor;
+
 // Creates the web application
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,3 +49,6 @@ app.MapRazorPages();
 
 // Starts the application
 app.Run();
+
+
+public partial class Program{}
