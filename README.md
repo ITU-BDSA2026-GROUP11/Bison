@@ -56,6 +56,13 @@ sqlite3 bison.db < schema.sql
 sqlite3 bison.db < dump.sql
 ```
 
+On Windows PowerShell (`<` does not work there):
+
+```powershell
+sqlite3 bison.db ".read schema.sql"
+sqlite3 bison.db ".read dump.sql"
+```
+
 Run on macOS/Linux:
 
 ```sh
