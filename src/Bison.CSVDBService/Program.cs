@@ -29,6 +29,7 @@ var observations = obs_db.Read();
         ID = nextID,
         Author = observation.Author,
         ObservationText = observation.ObservationText,
+        Location = observation.Location,
         Timestamp = DateTimeOffset.Now.ToUnixTimeSeconds()
     };
 
