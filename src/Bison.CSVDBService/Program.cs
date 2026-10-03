@@ -7,8 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<ITaxonomyRepository, TaxonomyRepository>();
 
 var app = builder.Build();
-var obs_db = CSVDatabase<Observation>.getInstance("../Bison.CLI/bison_observe_cli_db.csv");
-var evil_db = CSVDatabase<Comment>.getInstance("../Bison.CLI/bison_comments_cli_db.csv");
+
+var observationsPath = app.Configuration["Database:Observations"] ?? "../Bison.CLI/bison_observe_cli_db.csv";
+var commentsPath     = app.Configuration["Database:Comments"]     ?? "../Bison.CLI/bison_comments_cli_db.csv";
+var obs_db  = CSVDatabase<Observation>.getInstance(observationsPath);
+var evil_db = CSVDatabase<Comment>.getInstance(commentsPath);
 app.MapPost("/observation", (Observation observation) => 
 {
 var observations = obs_db.Read();
@@ -26,6 +29,7 @@ var observations = obs_db.Read();
         ID = nextID,
         Author = observation.Author,
         ObservationText = observation.ObservationText,
+        Location = observation.Location,
         Timestamp = DateTimeOffset.Now.ToUnixTimeSeconds()
     };
 
@@ -40,7 +44,7 @@ var observations = obs_db.Read();
 app.MapPost("/comment", (Comment comment) => {
     //  The same holds for /comment and /comments.
 
-    if (!obs_db.Read().Any(observation => observation.ID == comment.ObservationID))
+    if (obs_db.Read().Any(observation => observation.ID == comment.ObservationID))
     {
         var comments = evil_db.Read();
             int nextID = comments.Any()
@@ -71,7 +75,7 @@ app.MapGet("/comments", (int id) => {
     {
         return null;
     }
-    return evil_db.Read();
+    return evil_db.Read().Where(c => c.ObservationID == id);
 });
 
 
@@ -117,4 +121,6 @@ else
 }
 
 app.Run();
+
+public partial class Program { }
 
