@@ -44,7 +44,7 @@ var observations = obs_db.Read();
 app.MapPost("/comment", (Comment comment) => {
     //  The same holds for /comment and /comments.
 
-    if (!obs_db.Read().Any(observation => observation.ID == comment.ObservationID))
+    if (obs_db.Read().Any(observation => observation.ID == comment.ObservationID))
     {
         var comments = evil_db.Read();
             int nextID = comments.Any()
