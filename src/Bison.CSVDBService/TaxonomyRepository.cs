@@ -9,6 +9,7 @@ public interface ITaxonomyRepository
     Taxon? GetByVernacularName(string name);
     Taxon? GetSupertaxon(string taxonId);
     IReadOnlyList<Taxon> GetSubtaxons(string taxonId);
+    IReadOnlyCollection<Taxon> GetAll();
 }
 
 public class TaxonomyRepository : ITaxonomyRepository
@@ -119,6 +120,11 @@ public class TaxonomyRepository : ITaxonomyRepository
         return byId.GetValueOrDefault(taxonId);
     }
 
+    public IReadOnlyCollection<Taxon> GetAll()
+    {
+        return byId.Values;
+    }
+    
     public Taxon? GetByVernacularName(string name)
     {
         return byName.GetValueOrDefault(name);
