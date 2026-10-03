@@ -7,8 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<ITaxonomyRepository, TaxonomyRepository>();
 
 var app = builder.Build();
-var obs_db = CSVDatabase<Observation>.getInstance("../Bison.CLI/bison_observe_cli_db.csv");
-var evil_db = CSVDatabase<Comment>.getInstance("../Bison.CLI/bison_comments_cli_db.csv");
+
+var observationsPath = app.Configuration["Database:Observations"] ?? "../Bison.CLI/bison_observe_cli_db.csv";
+var commentsPath     = app.Configuration["Database:Comments"]     ?? "../Bison.CLI/bison_comments_cli_db.csv";
+var obs_db  = CSVDatabase<Observation>.getInstance(observationsPath);
+var evil_db = CSVDatabase<Comment>.getInstance(commentsPath);
 app.MapPost("/observation", (Observation observation) => 
 {
 var observations = obs_db.Read();
@@ -117,4 +120,6 @@ else
 }
 
 app.Run();
+
+public partial class Program { }
 
