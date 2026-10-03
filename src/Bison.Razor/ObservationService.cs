@@ -29,7 +29,7 @@ public class ObservationService : IObservationService
 
         // Gets observations and their authors, ordered from newest to oldest
         const string sql = """
-            SELECT u.username, o.text, o.pub_date
+            SELECT u.username, o.text, o.pub_date, o.observation_id
             FROM observation AS o
             JOIN user AS u ON o.author_id = u.user_id
             ORDER BY o.pub_date DESC, o.observation_id DESC
@@ -40,7 +40,8 @@ public class ObservationService : IObservationService
         return _db.ExecuteQuery(sql, reader => new ObservationViewModel(
             reader.GetString(0),
             reader.GetString(1),
-            UnixTimeStampToDateTimeString(reader.GetInt64(2))
+            UnixTimeStampToDateTimeString(reader.GetInt64(2)),
+            reader.GetInt32(3)
         ), command =>
         {
             // Sets the maximum amount of observations returned
@@ -65,7 +66,7 @@ public class ObservationService : IObservationService
 
         // Gets observations only from the given username
         const string sql = """
-            SELECT u.username, o.text, o.pub_date
+            SELECT u.username, o.text, o.pub_date, o.observation_id
             FROM observation AS o
             JOIN user AS u ON o.author_id = u.user_id
             WHERE u.username = $author
@@ -77,7 +78,8 @@ public class ObservationService : IObservationService
         return _db.ExecuteQuery(sql, reader => new ObservationViewModel(
             reader.GetString(0),
             reader.GetString(1),
-            UnixTimeStampToDateTimeString(reader.GetInt64(2))
+            UnixTimeStampToDateTimeString(reader.GetInt64(2)),
+            reader.GetInt32(3)
         ), command =>
         {
             // Specifies which author's observations should be returned
