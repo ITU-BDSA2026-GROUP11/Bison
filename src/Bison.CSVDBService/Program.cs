@@ -75,7 +75,7 @@ app.MapGet("/comments", (int id) => {
     {
         return null;
     }
-    return evil_db.Read();
+    return evil_db.Read().Where(c => c.ObservationID == id);
 });
 
 
