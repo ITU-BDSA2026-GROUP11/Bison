@@ -3,8 +3,14 @@ using Bison.Razor;
 // Creates the web application
 var builder = WebApplication.CreateBuilder(args);
 
-// Adds Razor Pages to the application
-builder.Services.AddRazorPages();
+// Adds Razor Pages to the application.
+// The public timeline is reachable at "/" (from its @page line),
+// and also at "/obs" and "/ob" (an /ob request without an id lists all observations).
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AddPageRoute("/Public", "obs");
+    options.Conventions.AddPageRoute("/Public", "ob");
+});
 
 // Tries to get the database path from the BISONDBPATH environment variable
 string? databasePath = Environment.GetEnvironmentVariable("BISONDBPATH");
