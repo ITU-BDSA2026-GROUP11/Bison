@@ -1,4 +1,4 @@
-# Bison
+# Bison (Has been removed from main and exist only in the Bison.CLI branch)
 
 ## Build and test
 
