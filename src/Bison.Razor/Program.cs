@@ -1,4 +1,5 @@
 using Bison.Razor;
+using Bison.Razor.Repositories;
 
 // Creates the web application
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +24,10 @@ if (string.IsNullOrWhiteSpace(databasePath))
 
 // Makes DBFacade available through dependency injection
 builder.Services.AddSingleton(new DBFacade(databasePath));
+
+// Makes PostRepository available when IPostRepository is requested
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+
 
 // Makes ObservationService available when IObservationService is requested
 builder.Services.AddScoped<IObservationService, ObservationService>();
