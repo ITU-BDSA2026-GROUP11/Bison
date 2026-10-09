@@ -1,8 +1,13 @@
 using Bison.Razor;
 using Bison.Razor.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 // Creates the web application
 var builder = WebApplication.CreateBuilder(args);
+
+//Register database with dbContext
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<BisonDBContext>(options => options.UseSqlite(connectionString));
 
 // Adds Razor Pages to the application.
 // The public timeline is reachable at "/" (from its @page line),

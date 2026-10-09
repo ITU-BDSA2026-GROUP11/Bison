@@ -18,6 +18,9 @@ public class PostRepository : IPostRepository
         // Calculates how many observations should be skipped
         int offset = (page - 1) * pageSize;
 
+
+
+        
         const string sql = """
             SELECT u.username, o.text, o.pub_date, o.observation_id
             FROM observation AS o
@@ -35,7 +38,7 @@ public class PostRepository : IPostRepository
         {
             command.Parameters.AddWithValue("$pageSize", pageSize);
             command.Parameters.AddWithValue("$offset", offset);
-        });
+        }); 
     }
 
     public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page, int pageSize)
