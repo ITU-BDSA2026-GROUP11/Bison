@@ -52,11 +52,26 @@ public class PostRepository : IPostRepository
         }); */
     }
 
-    public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page, int pageSize)
+    public List<PostDTO> GetObservationsFromAuthor(string author, int page, int pageSize)
     {
         // Calculates how many observations should be skipped
         int offset = (page - 1) * pageSize;
 
+
+        var observations = _context.observations.Include(o => o.Author)
+        .Where(o => o.Author.Name == author)
+        .OrderByDescending(o => o.TimeStamp)
+        .Skip(offset)
+        .Take(pageSize)
+        .ToList();
+
+        return observations.Select(o => new PostDTO
+        {
+            PostId = o.PostId, Author = o.Author.Name, 
+            Text = o.Text, 
+            TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+        }).ToList();
+        /*
         const string sql = """
             SELECT u.username, o.text, o.pub_date, o.observation_id
             FROM observation AS o
@@ -76,11 +91,21 @@ public class PostRepository : IPostRepository
             command.Parameters.AddWithValue("$author", author);
             command.Parameters.AddWithValue("$pageSize", pageSize);
             command.Parameters.AddWithValue("$offset", offset);
-        });
+        }); */
     }
 
-    public ObservationViewModel? GetObservation(int id)
+    public PostDTO? GetObservation(int id)
     {
+        var observation = _context.observations.Include(o => o.Author)
+        .FirstOrDefault(o => o.PostId == id);
+
+        return new PostDTO
+        {
+            PostId = observation.PostId, Author = observation.Author.Name, 
+            Text = observation.Text, 
+            TimeStamp = observation.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+        };
+        /*
         const string sql = """
             SELECT o.observation_id, u.username, o.text, o.pub_date
             FROM observation AS o
@@ -94,11 +119,23 @@ public class PostRepository : IPostRepository
             UnixTimeStampToDateTimeString(reader.GetInt64(3)),
             reader.GetInt32(0)
         ), command => command.Parameters.AddWithValue("$id", id))
-        .FirstOrDefault();
+        .FirstOrDefault(); */
     }
 
-    public List<CommentViewModel> GetComments(int observationId)
+    public List<PostDTO> GetComments(int observationId)
     {
+
+        var comments = _context.comments.Include(c => c.Author).
+        Where(c => c.ObservationId == observationId).OrderByDescending(o => o.TimeStamp)
+        .ToList();
+
+        return comments.Select(c => new PostDTO
+        {
+            PostId = c.PostId, Author = c.Author.Name, 
+            Text = c.Text, 
+            TimeStamp = c.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+        }).ToList();
+        /*
         const string sql = """
             SELECT u.username, c.text, c.pub_date
             FROM comment AS c
@@ -111,11 +148,23 @@ public class PostRepository : IPostRepository
             reader.GetString(0),
             reader.GetString(1),
             UnixTimeStampToDateTimeString(reader.GetInt64(2))
-        ), command => command.Parameters.AddWithValue("$observationId", observationId));
+        ), command => command.Parameters.AddWithValue("$observationId", observationId)); */
     }
 
-    public List<ProposalViewModel> GetProposals(int observationId)
+    public List<PostDTO> GetProposals(int observationId)
     {
+        var proposals = _context.proposals.Include(p => p.Author)
+        .Where(c => c.ObservationId == observationId).OrderByDescending(o => o.TimeStamp)
+        .ToList();
+
+        return proposals.Select(p => new PostDTO
+        {
+            PostId = p.PostId, Author = p.Author.Name, 
+            Text = p.Text, 
+            TimeStamp = p.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+        }).ToList();
+
+        /*
         const string sql = """
             SELECT u.username, p.taxon_id, p.pub_date
             FROM proposal AS p
@@ -128,7 +177,7 @@ public class PostRepository : IPostRepository
             reader.GetString(0),
             reader.GetString(1),
             UnixTimeStampToDateTimeString(reader.GetInt64(2))
-        ), command => command.Parameters.AddWithValue("$observationId", observationId));
+        ), command => command.Parameters.AddWithValue("$observationId", observationId)); */
     }
 
     // Converts a Unix timestamp into a readable date and time

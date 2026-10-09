@@ -1,3 +1,5 @@
+using Bison.Razor.DTO;
+
 namespace Bison.Razor;
 
 // Id comes last with a default value, so existing code that creates
@@ -11,17 +13,17 @@ public record ProposalViewModel(string Author, string TaxonId, string Timestamp)
 public interface IObservationService
 {
     // Accepts a page number - default is 1
-    public List<ObservationViewModel> GetObservations(int page = 1);
+    public List<PostDTO> GetObservations(int page = 1);
 
     // Accepts a page number - default is 1
-    public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page = 1);
+    public List<PostDTO> GetObservationsFromAuthor(string author, int page = 1);
 
     // Returns one observation, or null if no observation has that id
-    public ObservationViewModel? GetObservation(int id);
+    public PostDTO? GetObservation(int id);
 
     // Returns all comments on an observation, oldest first
-    public List<CommentViewModel> GetComments(int observationId);
+    public List<PostDTO> GetComments(int observationId);
 
     // Returns all taxon proposals on an observation, oldest first
-    public List<ProposalViewModel> GetProposals(int observationId);
+    public List<PostDTO> GetProposals(int observationId);
 }
