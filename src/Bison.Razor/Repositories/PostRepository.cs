@@ -1,3 +1,6 @@
+using Bison.Razor.DTO;
+using Microsoft.EntityFrameworkCore;
+
 namespace Bison.Razor.Repositories;
 
 // Handles all database access for posts.
@@ -5,22 +8,30 @@ namespace Bison.Razor.Repositories;
 public class PostRepository : IPostRepository
 {
     // Gives the repository access to the database
-    private readonly DBFacade _db;
+    private readonly BisonDBContext _context;
 
     // Gets DBFacade through dependency injection
-    public PostRepository(DBFacade db)
+    public PostRepository(BisonDBContext context)
     {
-        _db = db;
+        _context = context;
     }
 
-    public List<ObservationViewModel> GetObservations(int page, int pageSize)
+    public List<PostDTO> GetObservations(int page, int pageSize)
     {
         // Calculates how many observations should be skipped
         int offset = (page - 1) * pageSize;
 
+        var observations = _context.observations.Include(o => o.Author)
+        .OrderByDescending(o => o.TimeStamp).Skip(offset).Take(pageSize).ToList();
 
+        return observations.Select(o => new PostDTO
+        {
+            PostId = o.PostId, Author = o.Author.Name, 
+            Text = o.Text, 
+            TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+        }).ToList();
 
-        
+        /*
         const string sql = """
             SELECT u.username, o.text, o.pub_date, o.observation_id
             FROM observation AS o
@@ -38,7 +49,7 @@ public class PostRepository : IPostRepository
         {
             command.Parameters.AddWithValue("$pageSize", pageSize);
             command.Parameters.AddWithValue("$offset", offset);
-        }); 
+        }); */
     }
 
     public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page, int pageSize)

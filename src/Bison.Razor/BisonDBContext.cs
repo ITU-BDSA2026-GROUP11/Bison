@@ -7,6 +7,13 @@ namespace Bison.Razor;
 
 public class BisonDBContext : DbContext
 { 
+    public DbSet<Observation> observations {get; set;}
+    public DbSet<Comment> comments {get; set;}
+
+    public DbSet<Author> authors {get; set;}
+    public DbSet<Proposal> proposals {get; set;}
+    public DbSet<Taxon> taxons {get; set;}
+    public DbSet<Post> posts {get; set;}
     public BisonDBContext(DbContextOptions<BisonDBContext> options) : base(options){    
     }
 
