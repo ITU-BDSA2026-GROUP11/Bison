@@ -33,7 +33,7 @@ namespace Bison.Razor.Migrations
 
                     b.HasKey("AuthorId");
 
-                    b.ToTable("authors");
+                    b.ToTable("authors", (string)null);
                 });
 
             modelBuilder.Entity("Bison.Razor.Models.Post", b =>
@@ -61,7 +61,7 @@ namespace Bison.Razor.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("posts");
+                    b.ToTable("posts", (string)null);
 
                     b.HasDiscriminator().HasValue("Post");
 
@@ -74,22 +74,22 @@ namespace Bison.Razor.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("DanishVernacularName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("DwcTaxonId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int?>("ParentId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("VernacularName")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("DanishVernacularName");
+
+                    b.Property<string>("dwc_TaxonID")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("DwcTaxonId");
 
                     b.HasKey("TaxonId");
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("taxons");
+                    b.ToTable("taxons", (string)null);
                 });
 
             modelBuilder.Entity("Bison.Razor.Models.Comment", b =>
@@ -121,23 +121,16 @@ namespace Bison.Razor.Migrations
                     b.HasBaseType("Bison.Razor.Models.Post");
 
                     b.Property<int>("ObservationId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Proposal_ObservationId");
 
                     b.Property<int>("TaxonId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Proposal_TaxonId");
 
                     b.HasIndex("ObservationId");
 
                     b.HasIndex("TaxonId");
-
-                    b.ToTable("posts", t =>
-                        {
-                            t.Property("ObservationId")
-                                .HasColumnName("Proposal_ObservationId");
-
-                            t.Property("TaxonId")
-                                .HasColumnName("Proposal_TaxonId");
-                        });
 
                     b.HasDiscriminator().HasValue("Proposal");
                 });
