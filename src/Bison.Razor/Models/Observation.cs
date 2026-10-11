@@ -2,11 +2,15 @@ namespace Bison.Razor.Models;
 
 public class Observation : Post
 {
+    // Foreign key for the taxon
     public int TaxonId { get; set; }
 
-    public required Taxon Taxon { get; set; }
+    // Taxon associated with the observation
+    public Taxon Taxon { get; set; } = null!;
 
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    // Comments on this observation
+    public List<Comment> Comments { get; set; } = new();
 
-    public ICollection<Proposal> Proposals { get; set; } = new List<Proposal>();
+    // Taxon proposals for this observation
+    public List<Proposal> Proposals { get; set; } = new();
 }

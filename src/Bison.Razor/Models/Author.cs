@@ -4,9 +4,10 @@ public class Author
 {
     public int AuthorId { get; set; }
 
-    public required string Name { get; set; }
+    public string Name { get; set; } = "";
 
-    public required string Email { get; set; }
+    public string Email { get; set; } = "";
 
-    public ICollection<Post> Posts { get; set; } = new List<Post>();
+    // All posts written by this author
+    public List<Post> Posts { get; set; } = new();
 }
