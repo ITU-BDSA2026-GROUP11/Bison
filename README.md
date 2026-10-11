@@ -12,7 +12,7 @@ dotnet build
 dotnet test
 ```
 
-## Bison.CLI
+## Bison.CLI (older project - look in the Bison.CLI branch)
 
 From the `Bison.CLI` folder:
 
@@ -40,39 +40,9 @@ dotnet run location <location>
 
 From the `Bison.Razor` folder:
 
-Install SQLite package if needed:
+Run the program
 
 ```sh
-dotnet add package Microsoft.Data.Sqlite
-```
-
-Create and fill the database:
-
-```sh
-sqlite3 bison.db < schema.sql
-```
-
-```sh
-sqlite3 bison.db < dump.sql
-```
-
-On Windows PowerShell
-
-```powershell
-sqlite3 bison.db ".read schema.sql"
-sqlite3 bison.db ".read dump.sql"
-```
-
-Run on macOS/Linux:
-
-```sh
-BISONDBPATH=./bison.db dotnet run
-```
-
-Run on Windows PowerShell:
-
-```powershell
-$env:BISONDBPATH="./bison.db"
 dotnet run
 ```
 
