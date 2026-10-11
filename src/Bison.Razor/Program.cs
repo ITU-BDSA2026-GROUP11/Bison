@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<BisonDBContext>(options => options.UseSqlite(connectionString));
 
+
+
 // Adds Razor Pages to the application.
 // The public timeline is reachable at "/" (from its @page line),
 // and also at "/obs" and "/ob" (an /ob request without an id lists all observations).
@@ -40,6 +42,11 @@ builder.Services.AddScoped<IObservationService, ObservationService>();
 // Builds the application
 var app = builder.Build();
 
+//using (var scope = app.Services.CreateScope())
+//{
+  //  using var context = scope.ServiceProvider.GetService<BisonDBContext>();
+    //context.Database.Migrate();
+//}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

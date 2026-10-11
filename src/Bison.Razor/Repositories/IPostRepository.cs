@@ -1,4 +1,5 @@
 using Bison.Razor.DTO;
+using Bison.Razor.Models;
 
 namespace Bison.Razor.Repositories;
 
@@ -19,5 +20,5 @@ public interface IPostRepository
     List<PostDTO> GetComments(int observationId);
 
     // Returns all taxon proposals on an observation, oldest first
-    List<PostDTO> GetProposals(int observationId);
+    List<proposalDTO> GetProposals(int observationId);
 }

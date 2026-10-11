@@ -25,5 +25,5 @@ public interface IObservationService
     public List<PostDTO> GetComments(int observationId);
 
     // Returns all taxon proposals on an observation, oldest first
-    public List<PostDTO> GetProposals(int observationId);
+    public List<proposalDTO> GetProposals(int observationId);
 }

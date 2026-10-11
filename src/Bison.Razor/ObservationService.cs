@@ -54,7 +54,7 @@ public class ObservationService : IObservationService
     }
 
     // Gets all taxon proposals on an observation, oldest first
-    public List<PostDTO> GetProposals(int observationId)
+    public List<proposalDTO> GetProposals(int observationId)
     {
         return _repository.GetProposals(observationId);
     }

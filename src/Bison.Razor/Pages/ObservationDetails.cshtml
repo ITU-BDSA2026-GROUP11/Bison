@@ -15,8 +15,8 @@
                 <strong>
                     <a href="/obs/@obs.Author">@obs.Author</a>
                 </strong>
-                @obs.Message
-                <small>&mdash; @obs.Timestamp</small>
+                @obs.Text
+                <small>&mdash; @obs.TimeStamp</small>
             </p>
         </li>
     </ul>
@@ -34,7 +34,7 @@
                             <a href="/obs/@proposal.Author">@proposal.Author</a>
                         </strong>
                         proposes taxon <code>@proposal.TaxonId</code>
-                        <small>&mdash; @proposal.Timestamp</small>
+                        <small>&mdash; @proposal.TimeStamp</small>
                     </p>
                 </li>
             }
@@ -57,8 +57,8 @@
                         <strong>
                             <a href="/obs/@comment.Author">@comment.Author</a>
                         </strong>
-                        @comment.Message
-                        <small>&mdash; @comment.Timestamp</small>
+                        @comment.Text
+                        <small>&mdash; @comment.TimeStamp</small>
                     </p>
                 </li>
             }

@@ -33,7 +33,7 @@ namespace Bison.Razor.Migrations
 
                     b.HasKey("AuthorId");
 
-                    b.ToTable("Author");
+                    b.ToTable("authors");
                 });
 
             modelBuilder.Entity("Bison.Razor.Models.Post", b =>
@@ -61,7 +61,7 @@ namespace Bison.Razor.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Post");
+                    b.ToTable("posts");
 
                     b.HasDiscriminator().HasValue("Post");
 
@@ -89,7 +89,7 @@ namespace Bison.Razor.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Taxon");
+                    b.ToTable("taxons");
                 });
 
             modelBuilder.Entity("Bison.Razor.Models.Comment", b =>
@@ -130,7 +130,7 @@ namespace Bison.Razor.Migrations
 
                     b.HasIndex("TaxonId");
 
-                    b.ToTable("Post", t =>
+                    b.ToTable("posts", t =>
                         {
                             t.Property("ObservationId")
                                 .HasColumnName("Proposal_ObservationId");

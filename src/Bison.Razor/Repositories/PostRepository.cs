@@ -1,4 +1,5 @@
 using Bison.Razor.DTO;
+using Bison.Razor.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bison.Razor.Repositories;
@@ -151,18 +152,26 @@ public class PostRepository : IPostRepository
         ), command => command.Parameters.AddWithValue("$observationId", observationId)); */
     }
 
-    public List<PostDTO> GetProposals(int observationId)
+    public List<proposalDTO> GetProposals(int observationId)
     {
         var proposals = _context.proposals.Include(p => p.Author)
         .Where(c => c.ObservationId == observationId).OrderByDescending(o => o.TimeStamp)
         .ToList();
 
-        return proposals.Select(p => new PostDTO
+        return proposals.Select(p => new proposalDTO
         {
-            PostId = p.PostId, Author = p.Author.Name, 
+            TaxonId = p.TaxonId, Author = p.Author.Name, 
             Text = p.Text, 
             TimeStamp = p.TimeStamp.ToString("MM/dd/yy H:mm:ss")
         }).ToList();
+
+
+        //return proposals.Select(p => new PostDTO
+        //{
+            //PostId = p.PostId, Author = p.Author.Name, 
+            //Text = p.Text, 
+          //  TimeStamp = p.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+        //}).ToList();
 
         /*
         const string sql = """
