@@ -1,12 +1,13 @@
+using System.ComponentModel.DataAnnotations.Schema;
 namespace Bison.Razor.Models;
 
 public class Taxon
 {
     public int TaxonId { get; set; }
 
-    public required string DwcTaxonId { get; set; }//This need to be string or int depending on the data unsure of which
+    public string? dwc_TaxonID { get; set; } = "";
 
-    public required string DanishVernacularName { get; set; }
+    public string? VernacularName { get; set; }
 
     public int? ParentId { get; set; }
 

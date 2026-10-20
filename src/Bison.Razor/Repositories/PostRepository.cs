@@ -1,127 +1,128 @@
+using Bison.Razor.DTO;
+using Bison.Razor.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace Bison.Razor.Repositories;
 
-// Handles all database access for posts.
-// Only the DI container (Program.cs) knows about this class.
+// Handles database access for observations, comments, and proposals
 public class PostRepository : IPostRepository
 {
-    // Gives the repository access to the database
-    private readonly DBFacade _db;
+    // Database context
+    private readonly BisonDBContext _context;
 
-    // Gets DBFacade through dependency injection
-    public PostRepository(DBFacade db)
+    // Get database context through dependency injection
+    public PostRepository(BisonDBContext context)
     {
-        _db = db;
+        _context = context;
     }
 
-    public List<ObservationViewModel> GetObservations(int page, int pageSize)
+
+    // Get observations for the public timeline
+    public List<PostDTO> GetObservations(int page, int pageSize)
     {
-        // Calculates how many observations should be skipped
         int offset = (page - 1) * pageSize;
 
-        const string sql = """
-            SELECT u.username, o.text, o.pub_date, o.observation_id
-            FROM observation AS o
-            JOIN user AS u ON o.author_id = u.user_id
-            ORDER BY o.pub_date DESC, o.observation_id DESC
-            LIMIT $pageSize OFFSET $offset
-            """;
+        var observations = _context.Observations
+            .Include(o => o.Author)
+            .OrderByDescending(o => o.TimeStamp)
+            .ThenByDescending(o => o.PostId)
+            .Skip(offset)
+            .Take(pageSize)
+            .ToList();
 
-        return _db.ExecuteQuery(sql, reader => new ObservationViewModel(
-            reader.GetString(0),
-            reader.GetString(1),
-            UnixTimeStampToDateTimeString(reader.GetInt64(2)),
-            reader.GetInt32(3)
-        ), command =>
+        return observations.Select(o => new PostDTO
         {
-            command.Parameters.AddWithValue("$pageSize", pageSize);
-            command.Parameters.AddWithValue("$offset", offset);
-        });
+            PostId = o.PostId,
+            Author = o.Author.Name,
+            Text = o.Text,
+            TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+        }).ToList();
     }
 
-    public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page, int pageSize)
+
+    // Get observations from one specific author
+    public List<PostDTO> GetObservationsFromAuthor(
+        string author,
+        int page,
+        int pageSize)
     {
-        // Calculates how many observations should be skipped
         int offset = (page - 1) * pageSize;
 
-        const string sql = """
-            SELECT u.username, o.text, o.pub_date, o.observation_id
-            FROM observation AS o
-            JOIN user AS u ON o.author_id = u.user_id
-            WHERE u.username = $author
-            ORDER BY o.pub_date DESC, o.observation_id DESC
-            LIMIT $pageSize OFFSET $offset
-            """;
+        var observations = _context.Observations
+            .Include(o => o.Author)
+            .Where(o => o.Author.Name == author)
+            .OrderByDescending(o => o.TimeStamp)
+            .ThenByDescending(o => o.PostId)
+            .Skip(offset)
+            .Take(pageSize)
+            .ToList();
 
-        return _db.ExecuteQuery(sql, reader => new ObservationViewModel(
-            reader.GetString(0),
-            reader.GetString(1),
-            UnixTimeStampToDateTimeString(reader.GetInt64(2)),
-            reader.GetInt32(3)
-        ), command =>
+        return observations.Select(o => new PostDTO
         {
-            command.Parameters.AddWithValue("$author", author);
-            command.Parameters.AddWithValue("$pageSize", pageSize);
-            command.Parameters.AddWithValue("$offset", offset);
-        });
+            PostId = o.PostId,
+            Author = o.Author.Name,
+            Text = o.Text,
+            TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+        }).ToList();
     }
 
-    public ObservationViewModel? GetObservation(int id)
-    {
-        const string sql = """
-            SELECT o.observation_id, u.username, o.text, o.pub_date
-            FROM observation AS o
-            JOIN user AS u ON o.author_id = u.user_id
-            WHERE o.observation_id = $id
-            """;
 
-        return _db.ExecuteQuery(sql, reader => new ObservationViewModel(
-            reader.GetString(1),
-            reader.GetString(2),
-            UnixTimeStampToDateTimeString(reader.GetInt64(3)),
-            reader.GetInt32(0)
-        ), command => command.Parameters.AddWithValue("$id", id))
-        .FirstOrDefault();
+    // Get one observation by its ID
+    public PostDTO? GetObservation(int id)
+    {
+        var observation = _context.Observations
+            .Include(o => o.Author)
+            .FirstOrDefault(o => o.PostId == id);
+
+        if (observation == null)
+        {
+            return null;
+        }
+
+        return new PostDTO
+        {
+            PostId = observation.PostId,
+            Author = observation.Author.Name,
+            Text = observation.Text,
+            TimeStamp = observation.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+        };
     }
 
-    public List<CommentViewModel> GetComments(int observationId)
-    {
-        const string sql = """
-            SELECT u.username, c.text, c.pub_date
-            FROM comment AS c
-            JOIN user AS u ON c.author_id = u.user_id
-            WHERE c.observation_id = $observationId
-            ORDER BY c.pub_date ASC, c.comment_id ASC
-            """;
 
-        return _db.ExecuteQuery(sql, reader => new CommentViewModel(
-            reader.GetString(0),
-            reader.GetString(1),
-            UnixTimeStampToDateTimeString(reader.GetInt64(2))
-        ), command => command.Parameters.AddWithValue("$observationId", observationId));
+    // Get comments belonging to an observation
+    public List<PostDTO> GetComments(int observationId)
+    {
+        var comments = _context.Comments
+            .Include(c => c.Author)
+            .Where(c => c.ObservationId == observationId)
+            .OrderBy(c => c.TimeStamp)
+            .ToList();
+
+        return comments.Select(c => new PostDTO
+        {
+            PostId = c.PostId,
+            Author = c.Author.Name,
+            Text = c.Text,
+            TimeStamp = c.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+        }).ToList();
     }
 
-    public List<ProposalViewModel> GetProposals(int observationId)
-    {
-        const string sql = """
-            SELECT u.username, p.taxon_id, p.pub_date
-            FROM proposal AS p
-            JOIN user AS u ON p.author_id = u.user_id
-            WHERE p.observation_id = $observationId
-            ORDER BY p.pub_date ASC, p.proposal_id ASC
-            """;
 
-        return _db.ExecuteQuery(sql, reader => new ProposalViewModel(
-            reader.GetString(0),
-            reader.GetString(1),
-            UnixTimeStampToDateTimeString(reader.GetInt64(2))
-        ), command => command.Parameters.AddWithValue("$observationId", observationId));
-    }
-
-    // Converts a Unix timestamp into a readable date and time
-    private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
+    // Get proposals belonging to an observation
+    public List<proposalDTO> GetProposals(int observationId)
     {
-        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        dateTime = dateTime.AddSeconds(unixTimeStamp);
-        return dateTime.ToString("MM/dd/yy H:mm:ss");
+        var proposals = _context.Proposals
+            .Include(p => p.Author)
+            .Where(p => p.ObservationId == observationId)
+            .OrderBy(p => p.TimeStamp)
+            .ToList();
+
+        return proposals.Select(p => new proposalDTO
+        {
+            TaxonId = p.TaxonId,
+            Author = p.Author.Name,
+            Text = p.Text,
+            TimeStamp = p.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+        }).ToList();
     }
 }
