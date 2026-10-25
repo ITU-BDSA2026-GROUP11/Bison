@@ -14,4 +14,20 @@ public class Taxon
     public Taxon? Parent { get; set; }
 
     public ICollection<Taxon> Children { get; set; } = new List<Taxon>();
+
+    public bool IsSubTaxon(Taxon ancestor)
+    {
+        if(this.Parent != null)
+        {
+            for (Taxon t = this; t.Parent != null; t = t.Parent)
+            {
+                if(t.TaxonId == ancestor.TaxonId)
+                {
+                    return true;
+                }
+            } 
+        }
+        return false;
+        
+    }
 }
