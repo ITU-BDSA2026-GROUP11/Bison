@@ -12,28 +12,41 @@ module {:extern "Bison.Razor.Models"} Models{
 module FilterByTaxon {
     import opened Models
     function FilterBy(root: Taxon, obs: seq<Observation>): seq<Observation>
-    ensures forall o: Observation :: o in FilterBy(root, obs) ==> o in obs && o.getTaxon().IsSubTaxon(root)
-    ensures forall o: Observation :: o in obs && o.getTaxon().IsSubTaxon(root) ==> o in FilterBy(root, obs)
-    decreases |obs|
-    {
-    if |obs| == 0 then []
-    else
-    assert obs == [obs[0]] + obs[1..];
-    if obs[0].getTaxon().IsSubTaxon(root) then [obs[0]] + FilterBy(root, obs[1..])
-    else FilterBy(root, obs[1..])
+        ensures forall o: Observation :: o in FilterBy(root, obs) ==> o in obs && o.getTaxon().IsSubTaxon(root)
+        ensures forall o: Observation :: o in obs && o.getTaxon().IsSubTaxon(root) ==> o in FilterBy(root, obs)
+        ensures |FilterBy(root, obs)| <= |obs|
+        decreases |obs|
+        {
+        if |obs| == 0 then []
+        else
+        assert obs == [obs[0]] + obs[1..];
+        if obs[0].getTaxon().IsSubTaxon(root) 
+        then [obs[0]] + FilterBy(root, obs[1..])
+        else FilterBy(root, obs[1..])
     }
 }
 
 module FilterWrapper {
-    import opened Models
     import opened FilterByTaxon
+    import opened Models
 
     method FilterObservations(root: Taxon, obs: seq<Observation>) returns (ObsArr: array<Observation>)
-    
-    ensures ObsArr[..] == FilterBy(root, obs)
-    {
-        var fObs := FilterBy(root, obs);
-        ObsArr := new Observation[|fObs|](i => fObs[i])
+        ensures fresh(ObsArr)
+        ensures forall o: Observation :: o in ObsArr[..] ==> 
+            o.getTaxon().IsSubTaxon(root)
+        ensures forall o: Observation :: o in ObsArr[..] && o.getTaxon().IsSubTaxon(root) ==> 
+            o in ObsArr[..]
+        ensures ObsArr[..] == FilterBy(root, obs)
+        requires |FilterBy(root, obs)| > 0
+        {
+            //fObs := FilterBy(root, obs);
+            //ObsArr := new Observation[|fObs|]
+            //while i < |fObs|
+            //ObsArr := new Observation[|FilterBy(root, obs)|];
+            var fobs := FilterBy(root, obs[..]);
+            ObsArr := new Observation[|fobs|](i requires 0 <= i < |fobs| => fobs[i]);
+            assert ObsArr[..] == fobs;
+
     }
 }
 
