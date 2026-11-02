@@ -8,6 +8,8 @@ public class Observation : Post
     // Taxon associated with the observation
     public Taxon Taxon { get; set; } = null!;
 
+    public Taxon getTaxon() => Taxon;
+
     // Comments on this observation
     public List<Comment> Comments { get; set; } = new();
 
