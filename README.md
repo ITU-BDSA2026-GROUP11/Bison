@@ -1,9 +1,7 @@
 # Bison (Has been removed from main and exist only in the Bison.CLI branch)
 
 ### Bison.Razor is now deployed via Azure at:
-```
-bdsagroup11bison-crhsanhra4h2e9bt.denmarkeast-01.azurewebsites.net
-```
+[https://bdsagroup11bison-crhsanhra4h2e9bt.denmarkeast-01.azurewebsites.net](https://bdsagroup11bison-crhsanhra4h2e9bt.denmarkeast-01.azurewebsites.net)
 
 ## Build and test
 
