@@ -26,6 +26,9 @@ public interface IObservationService
     // Returns one taxon, or null if no taxon has that id
     public Taxon? GetTaxon(int taxonId);
 
+    // Returns all taxa (id and display name), sorted by name
+    public List<TaxonDTO> GetAllTaxa();
+
     // Returns one observation, or null if no observation has that id
     public PostDTO? GetObservation(int id);
 

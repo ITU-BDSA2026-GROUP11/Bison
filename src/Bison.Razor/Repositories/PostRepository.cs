@@ -149,4 +149,20 @@ public class PostRepository : IPostRepository
     {
         return _context.Taxons.Find(taxonId);
     }
+
+
+    // Get all taxa for the taxon selector, sorted by display name
+    public List<TaxonDTO> GetAllTaxa()
+    {
+        return _context.Taxons
+            .AsEnumerable()
+            .Select(t => new TaxonDTO
+            {
+                TaxonId = t.TaxonId,
+                // Some taxa have no vernacular name, so fall back to the Darwin Core id
+                Name = t.VernacularName ?? t.dwc_TaxonID ?? $"Taxon {t.TaxonId}"
+            })
+            .OrderBy(t => t.Name)
+            .ToList();
+    }
 }

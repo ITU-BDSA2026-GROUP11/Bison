@@ -86,6 +86,12 @@ public class ObservationService : IObservationService
         return _repository.GetTaxon(taxonId);
     }
 
+    // Gets all taxa for the taxon selector
+    public List<TaxonDTO> GetAllTaxa()
+    {
+        return _repository.GetAllTaxa();
+    }
+
     // Gets one observation and its author
     public PostDTO? GetObservation(int id)
     {

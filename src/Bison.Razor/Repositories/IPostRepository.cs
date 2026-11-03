@@ -28,4 +28,7 @@ public interface IPostRepository
 
     // Returns one taxon, or null if no taxon has that id
     Taxon? GetTaxon(int taxonId);
+
+    // Returns all taxa (id and display name), sorted by name
+    List<TaxonDTO> GetAllTaxa();
 }
