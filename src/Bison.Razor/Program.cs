@@ -30,6 +30,10 @@ builder.Services.AddRazorPages(options =>
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 
+// Register the verified (Dafny) taxon filter service
+builder.Services.AddScoped<ITaxonFilterService, TaxonFilterService>();
+
+
 // Register the observation service
 builder.Services.AddScoped<IObservationService, ObservationService>();
 
