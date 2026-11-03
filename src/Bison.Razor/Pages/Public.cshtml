@@ -3,10 +3,33 @@
 @{
     ViewData["Title"] = "Bison";
     Layout = "Shared/_Layout";
+
+    // Keeps the taxon filter in the paging links
+    var taxonQuery = Model.SelectedTaxonId.HasValue ? $"&taxon={Model.SelectedTaxonId}" : "";
 }
 
 <div>
     <h2> Public Timeline </h2>
+
+    <form method="get" class="taxon-filter">
+        <label for="taxon">Filter by taxon:</label>
+        <select id="taxon" name="taxon" onchange="this.form.submit()">
+            <option value="">All taxa</option>
+            @foreach (var taxon in Model.Taxa)
+            {
+                <option value="@taxon.TaxonId" selected="@(taxon.TaxonId == Model.SelectedTaxonId)">@taxon.Name</option>
+            }
+        </select>
+        <noscript><button type="submit">Filter</button></noscript>
+    </form>
+
+    @if (Model.SelectedTaxonName != null)
+    {
+        <p>
+            Showing observations of <strong>@Model.SelectedTaxonName</strong> and its subtaxa.
+            <a href="/">Show all</a>
+        </p>
+    }
 
     @if (Model.Observations.Any())
     {
@@ -31,8 +54,8 @@
     }
     @if (Model.CurrentPage > 1)
     {
-        <a href="?page=@(Model.CurrentPage - 1)">Previous</a>
+        <a href="?page=@(Model.CurrentPage - 1)@taxonQuery">Previous</a>
     }
 
-    <a href="?page=@(Model.CurrentPage + 1)">Next</a>
+    <a href="?page=@(Model.CurrentPage + 1)@taxonQuery">Next</a>
 </div>
