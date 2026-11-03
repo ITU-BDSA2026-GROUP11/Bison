@@ -125,4 +125,28 @@ public class PostRepository : IPostRepository
             TimeStamp = p.TimeStamp.ToString("MM/dd/yy H:mm:ss")
         }).ToList();
     }
+
+
+    // Get all observations with their taxon and the taxon's full parent chain
+    public List<Observation> GetAllObservationsWithTaxa()
+    {
+        // Load every taxon into the context. EF Core then links each
+        // taxon's Parent to the already-loaded parent object, so the
+        // whole chain up to the root is available for IsSubTaxon.
+        _context.Taxons.Load();
+
+        return _context.Observations
+            .Include(o => o.Author)
+            .Include(o => o.Taxon)
+            .OrderByDescending(o => o.TimeStamp)
+            .ThenByDescending(o => o.PostId)
+            .ToList();
+    }
+
+
+    // Get one taxon by its ID
+    public Taxon? GetTaxon(int taxonId)
+    {
+        return _context.Taxons.Find(taxonId);
+    }
 }
