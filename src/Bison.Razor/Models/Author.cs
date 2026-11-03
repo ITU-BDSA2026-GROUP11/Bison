@@ -1,13 +1,21 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
+
 namespace Bison.Razor.Models;
 
-public class Author
+public class Author : IdentityUser<int>
 {
-    public int AuthorId { get; set; }
+
+    [NotMapped]
+    public int AuthorId
+    {
+        get => Id;
+        set => Id = value;
+    }
 
     public string Name { get; set; } = "";
 
-    public string Email { get; set; } = "";
+    // Email is now inherited from IdentityUser<int>.
 
-    // All posts written by this author
     public List<Post> Posts { get; set; } = new();
 }

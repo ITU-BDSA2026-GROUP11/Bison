@@ -6,7 +6,7 @@ public static class DbInitializer
 {
     public static void SeedDatabase(BisonDBContext bisonContext)
     {
-        if (!(bisonContext.Authors.Any() && bisonContext.Posts.Any()))
+        if (!bisonContext.Authors.Any() && !bisonContext.Posts.Any() && !bisonContext.Taxons.Any())
         {
             // Taxons, the parent of Pelecaniformes is null.
             var tPelecaniformes = new Taxon() { TaxonId = 1, dwc_TaxonID = "MSTSNM:Arter:3e4e67e4-f785-ea11-aa77-501ac539d1ea", VernacularName = "Årefodede", Parent = null };
