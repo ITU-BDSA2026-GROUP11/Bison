@@ -9,7 +9,7 @@ using System;
 using System.Numerics;
 using System.Collections;
 [assembly: DafnyAssembly.DafnySourceAttribute(@"// dafny 4.11.0.0
-// Command-line arguments: translate cs --include-runtime .\Filtering.dfy --allow-warnings
+// Command-line arguments: translate cs --include-runtime Filtering.dfy --allow-warnings --solver-path C:\Users\tliro\Downloads\z3-4.12.1-x64-win\z3-4.12.1-x64-win\bin\z3.exe
 // Filtering.dfy
 
 
@@ -41,17 +41,16 @@ module FilterByTaxon {
 }
 
 module FilterWrapper {
-  method FilterObservations(root: Taxon, obs: seq<Observation>) returns (ObsArr: array<Observation>)
-    requires |FilterBy(root, obs)| > 0
-    ensures fresh(ObsArr)
-    ensures forall o: Observation {:trigger o.getTaxon()} {:trigger o in ObsArr[..]} :: o in ObsArr[..] ==> o.getTaxon().IsSubTaxon(root)
-    ensures forall o: Observation {:trigger o.getTaxon()} {:trigger o in ObsArr[..]} :: o in ObsArr[..] && o.getTaxon().IsSubTaxon(root) ==> o in ObsArr[..]
-    ensures ObsArr[..] == FilterBy(root, obs)
+  method FilterObservations(root: Taxon, obs: seq<Observation>) returns (result: array<Observation>)
+    ensures fresh(result)
+    ensures result[..] == FilterBy(root, obs)
+    ensures forall o: Observation {:trigger o.getTaxon()} {:trigger o in obs} {:trigger o in result[..]} :: (o in result[..] ==> o in obs) && (o in result[..] ==> o.getTaxon().IsSubTaxon(root))
+    ensures forall o: Observation {:trigger o in result[..]} {:trigger o.getTaxon()} {:trigger o in obs} :: o in obs && o.getTaxon().IsSubTaxon(root) ==> o in result[..]
     decreases root, obs
   {
-    var fobs := FilterBy(root, obs[..]);
-    ObsArr := new Observation[|fobs|] ((i: int) requires 0 <= i < |fobs| => fobs[i]);
-    assert ObsArr[..] == fobs;
+    var filtered := FilterBy(root, obs);
+    result := new Observation[|filtered|] ((i: int) requires 0 <= i < |filtered| => filtered[i]);
+    assert result[..] == filtered;
   }
 
   import opened FilterByTaxon
@@ -5771,18 +5770,18 @@ namespace FilterWrapper {
   public partial class __default {
     public static Bison.Razor.Models.Observation[] FilterObservations(Bison.Razor.Models.Taxon root, Dafny.ISequence<Bison.Razor.Models.Observation> obs)
     {
-      Bison.Razor.Models.Observation[] ObsArr = new Bison.Razor.Models.Observation[0];
-      Dafny.ISequence<Bison.Razor.Models.Observation> _0_fobs;
-      _0_fobs = FilterByTaxon.__default.FilterBy(root, (obs));
-      Func<BigInteger, Bison.Razor.Models.Observation> _init0 = Dafny.Helpers.Id<Func<Dafny.ISequence<Bison.Razor.Models.Observation>, Func<BigInteger, Bison.Razor.Models.Observation>>>((_1_fobs) => ((System.Func<BigInteger, Bison.Razor.Models.Observation>)((_2_i) => {
-        return (_1_fobs).Select(_2_i);
-      })))(_0_fobs);
-      Bison.Razor.Models.Observation[] _nw0 = new Bison.Razor.Models.Observation[Dafny.Helpers.ToIntChecked(new BigInteger((_0_fobs).Count), "array size exceeds memory limit")];
+      Bison.Razor.Models.Observation[] result = new Bison.Razor.Models.Observation[0];
+      Dafny.ISequence<Bison.Razor.Models.Observation> _0_filtered;
+      _0_filtered = FilterByTaxon.__default.FilterBy(root, obs);
+      Func<BigInteger, Bison.Razor.Models.Observation> _init0 = Dafny.Helpers.Id<Func<Dafny.ISequence<Bison.Razor.Models.Observation>, Func<BigInteger, Bison.Razor.Models.Observation>>>((_1_filtered) => ((System.Func<BigInteger, Bison.Razor.Models.Observation>)((_2_i) => {
+        return (_1_filtered).Select(_2_i);
+      })))(_0_filtered);
+      Bison.Razor.Models.Observation[] _nw0 = new Bison.Razor.Models.Observation[Dafny.Helpers.ToIntChecked(new BigInteger((_0_filtered).Count), "array size exceeds memory limit")];
       for (var _i0_0 = 0; _i0_0 < new BigInteger(_nw0.Length); _i0_0++) {
         _nw0[(int)(_i0_0)] = _init0(_i0_0);
       }
-      ObsArr = _nw0;
-      return ObsArr;
+      result = _nw0;
+      return result;
     }
   }
 } // end of namespace FilterWrapper
