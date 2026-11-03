@@ -21,4 +21,14 @@ public interface IPostRepository
 
     // Returns all taxon proposals on an observation, oldest first
     List<proposalDTO> GetProposals(int observationId);
+
+    // Returns all observations, newest first, with Author and Taxon loaded.
+    // Every taxon's full Parent chain is loaded, so Taxon.IsSubTaxon works.
+    List<Observation> GetAllObservationsWithTaxa();
+
+    // Returns one taxon, or null if no taxon has that id
+    Taxon? GetTaxon(int taxonId);
+
+    // Returns all taxa (id and display name), sorted by name
+    List<TaxonDTO> GetAllTaxa();
 }

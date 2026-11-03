@@ -8,15 +8,40 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      Z3_VERSION: 4.12.1
+
     steps:
     - uses: actions/checkout@v4
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+
+    - name: Install Z3 (solver used by Dafny)
+      run: |
+        curl -sSL -o z3.zip "https://github.com/Z3Prover/z3/releases/download/z3-${Z3_VERSION}/z3-${Z3_VERSION}-x64-glibc-2.35.zip"
+        unzip -q z3.zip -d "$RUNNER_TEMP"
+        echo "Z3_PATH=$RUNNER_TEMP/z3-${Z3_VERSION}-x64-glibc-2.35/bin/z3" >> "$GITHUB_ENV"
+
+    - name: Restore Dafny tool
+      working-directory: src/Dafny
+      run: dotnet tool restore
+
+    - name: Verify Dafny code
+      working-directory: src/Dafny
+      run: dotnet dafny verify Filtering.dfy --allow-warnings --solver-path "$Z3_PATH"
+
+    - name: Compile Dafny code to C#
+      working-directory: src/Dafny
+      run: dotnet dafny translate cs --include-runtime Filtering.dfy --allow-warnings --solver-path "$Z3_PATH"
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build --no-restore
+
     - name: Test
       run: dotnet test --no-build --verbosity normal

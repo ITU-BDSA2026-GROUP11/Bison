@@ -1,4 +1,5 @@
 using Bison.Razor.DTO;
+using Bison.Razor.Models;
 
 namespace Bison.Razor;
 
@@ -17,6 +18,16 @@ public interface IObservationService
 
     // Accepts a page number - default is 1
     public List<PostDTO> GetObservationsFromAuthor(string author, int page = 1);
+
+    // Returns one page of observations whose taxon is the given taxon or a subtaxon of it.
+    // Returns an empty list if no taxon has that id.
+    public List<PostDTO> GetObservationsByTaxon(int taxonId, int page = 1);
+
+    // Returns one taxon, or null if no taxon has that id
+    public Taxon? GetTaxon(int taxonId);
+
+    // Returns all taxa (id and display name), sorted by name
+    public List<TaxonDTO> GetAllTaxa();
 
     // Returns one observation, or null if no observation has that id
     public PostDTO? GetObservation(int id);

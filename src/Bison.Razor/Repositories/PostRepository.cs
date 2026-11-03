@@ -125,4 +125,44 @@ public class PostRepository : IPostRepository
             TimeStamp = p.TimeStamp.ToString("MM/dd/yy H:mm:ss")
         }).ToList();
     }
+
+
+    // Get all observations with their taxon and the taxon's full parent chain
+    public List<Observation> GetAllObservationsWithTaxa()
+    {
+        // Load every taxon into the context. EF Core then links each
+        // taxon's Parent to the already-loaded parent object, so the
+        // whole chain up to the root is available for IsSubTaxon.
+        _context.Taxons.Load();
+
+        return _context.Observations
+            .Include(o => o.Author)
+            .Include(o => o.Taxon)
+            .OrderByDescending(o => o.TimeStamp)
+            .ThenByDescending(o => o.PostId)
+            .ToList();
+    }
+
+
+    // Get one taxon by its ID
+    public Taxon? GetTaxon(int taxonId)
+    {
+        return _context.Taxons.Find(taxonId);
+    }
+
+
+    // Get all taxa for the taxon selector, sorted by display name
+    public List<TaxonDTO> GetAllTaxa()
+    {
+        return _context.Taxons
+            .AsEnumerable()
+            .Select(t => new TaxonDTO
+            {
+                TaxonId = t.TaxonId,
+                // Some taxa have no vernacular name, so fall back to the Darwin Core id
+                Name = t.VernacularName ?? t.dwc_TaxonID ?? $"Taxon {t.TaxonId}"
+            })
+            .OrderBy(t => t.Name)
+            .ToList();
+    }
 }
