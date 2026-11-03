@@ -15,19 +15,17 @@ public class Taxon
 
     public ICollection<Taxon> Children { get; set; } = new List<Taxon>();
 
+    // True if this taxon is the ancestor itself, or lies anywhere below it.
+    // Walks up the Parent chain, so the Parent chain must be loaded.
     public bool IsSubTaxon(Taxon ancestor)
     {
-        if(this.Parent != null)
+        for (Taxon? t = this; t != null; t = t.Parent)
         {
-            for (Taxon t = this; t.Parent != null; t = t.Parent)
+            if (t.TaxonId == ancestor.TaxonId)
             {
-                if(t.TaxonId == ancestor.TaxonId)
-                {
-                    return true;
-                }
-            } 
+                return true;
+            }
         }
         return false;
-        
     }
 }
