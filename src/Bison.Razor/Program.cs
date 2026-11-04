@@ -63,7 +63,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<BisonDBContext>();
-
+    
+    context.Database.Migrate();
     DbInitializer.SeedDatabase(context);
 
     // Create the two required users locally
