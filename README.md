@@ -6,12 +6,15 @@
 
 ## Login and registration
 
-Users can access the following pages:
+All users can access the following pages:
 
 ```text
 /Identity/Account/Login
 /Identity/Account/Register
 ```
+To create an account and or login with either Github OAuth authentication, or by registering with an email and password.
+
+Logged in user have the additionel navigation element: "My Observationen" that shows post made by the user itself.
 
 The following accounts are available for testing:
 
