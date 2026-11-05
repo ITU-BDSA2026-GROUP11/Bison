@@ -9,11 +9,11 @@ using System;
 using System.Numerics;
 using System.Collections;
 [assembly: DafnyAssembly.DafnySourceAttribute(@"// dafny 4.11.0.0
-// Command-line arguments: translate cs --include-runtime Filtering.dfy --allow-warnings --solver-path C:\Users\tliro\Downloads\z3-4.12.1-x64-win\z3-4.12.1-x64-win\bin\z3.exe
+// Command-line arguments: translate cs --include-runtime --output src/Dafny/Filtering.cs src/Dafny/Filtering.dfy --allow-warnings
 // Filtering.dfy
 
 
-module {:extern ""Bison.Razor.Models""} Models {
+module {:extern ""Bison.Core.Models""} Models {
   class {:extern} Taxon {
     function {:extern} IsSubTaxon(ancestor: Taxon): bool
       decreases ancestor
@@ -5732,31 +5732,31 @@ internal static class FuncExtensions {
   }
 }
 // end of class FuncExtensions
-namespace Bison.Razor.Models {
+namespace Bison.Core.Models {
 
 
 
-} // end of namespace Bison.Razor.Models
+} // end of namespace Bison.Core.Models
 namespace FilterByTaxon {
 
   public partial class __default {
-    public static Dafny.ISequence<Bison.Razor.Models.Observation> FilterBy(Bison.Razor.Models.Taxon root, Dafny.ISequence<Bison.Razor.Models.Observation> obs)
+    public static Dafny.ISequence<Bison.Core.Models.Observation> FilterBy(Bison.Core.Models.Taxon root, Dafny.ISequence<Bison.Core.Models.Observation> obs)
     {
-      Dafny.ISequence<Bison.Razor.Models.Observation> _0___accumulator = Dafny.Sequence<Bison.Razor.Models.Observation>.FromElements();
+      Dafny.ISequence<Bison.Core.Models.Observation> _0___accumulator = Dafny.Sequence<Bison.Core.Models.Observation>.FromElements();
     TAIL_CALL_START: ;
       if ((new BigInteger((obs).Count)).Sign == 0) {
-        return Dafny.Sequence<Bison.Razor.Models.Observation>.Concat(_0___accumulator, Dafny.Sequence<Bison.Razor.Models.Observation>.FromElements());
+        return Dafny.Sequence<Bison.Core.Models.Observation>.Concat(_0___accumulator, Dafny.Sequence<Bison.Core.Models.Observation>.FromElements());
       } else {
         if ((((obs).Select(BigInteger.Zero)).getTaxon()).IsSubTaxon(root)) {
-          _0___accumulator = Dafny.Sequence<Bison.Razor.Models.Observation>.Concat(_0___accumulator, Dafny.Sequence<Bison.Razor.Models.Observation>.FromElements((obs).Select(BigInteger.Zero)));
-          Bison.Razor.Models.Taxon _in0 = root;
-          Dafny.ISequence<Bison.Razor.Models.Observation> _in1 = (obs).Drop(BigInteger.One);
+          _0___accumulator = Dafny.Sequence<Bison.Core.Models.Observation>.Concat(_0___accumulator, Dafny.Sequence<Bison.Core.Models.Observation>.FromElements((obs).Select(BigInteger.Zero)));
+          Bison.Core.Models.Taxon _in0 = root;
+          Dafny.ISequence<Bison.Core.Models.Observation> _in1 = (obs).Drop(BigInteger.One);
           root = _in0;
           obs = _in1;
           goto TAIL_CALL_START;
         } else {
-          Bison.Razor.Models.Taxon _in2 = root;
-          Dafny.ISequence<Bison.Razor.Models.Observation> _in3 = (obs).Drop(BigInteger.One);
+          Bison.Core.Models.Taxon _in2 = root;
+          Dafny.ISequence<Bison.Core.Models.Observation> _in3 = (obs).Drop(BigInteger.One);
           root = _in2;
           obs = _in3;
           goto TAIL_CALL_START;
@@ -5768,15 +5768,15 @@ namespace FilterByTaxon {
 namespace FilterWrapper {
 
   public partial class __default {
-    public static Bison.Razor.Models.Observation[] FilterObservations(Bison.Razor.Models.Taxon root, Dafny.ISequence<Bison.Razor.Models.Observation> obs)
+    public static Bison.Core.Models.Observation[] FilterObservations(Bison.Core.Models.Taxon root, Dafny.ISequence<Bison.Core.Models.Observation> obs)
     {
-      Bison.Razor.Models.Observation[] result = new Bison.Razor.Models.Observation[0];
-      Dafny.ISequence<Bison.Razor.Models.Observation> _0_filtered;
+      Bison.Core.Models.Observation[] result = new Bison.Core.Models.Observation[0];
+      Dafny.ISequence<Bison.Core.Models.Observation> _0_filtered;
       _0_filtered = FilterByTaxon.__default.FilterBy(root, obs);
-      Func<BigInteger, Bison.Razor.Models.Observation> _init0 = Dafny.Helpers.Id<Func<Dafny.ISequence<Bison.Razor.Models.Observation>, Func<BigInteger, Bison.Razor.Models.Observation>>>((_1_filtered) => ((System.Func<BigInteger, Bison.Razor.Models.Observation>)((_2_i) => {
+      Func<BigInteger, Bison.Core.Models.Observation> _init0 = Dafny.Helpers.Id<Func<Dafny.ISequence<Bison.Core.Models.Observation>, Func<BigInteger, Bison.Core.Models.Observation>>>((_1_filtered) => ((System.Func<BigInteger, Bison.Core.Models.Observation>)((_2_i) => {
         return (_1_filtered).Select(_2_i);
       })))(_0_filtered);
-      Bison.Razor.Models.Observation[] _nw0 = new Bison.Razor.Models.Observation[Dafny.Helpers.ToIntChecked(new BigInteger((_0_filtered).Count), "array size exceeds memory limit")];
+      Bison.Core.Models.Observation[] _nw0 = new Bison.Core.Models.Observation[Dafny.Helpers.ToIntChecked(new BigInteger((_0_filtered).Count), "array size exceeds memory limit")];
       for (var _i0_0 = 0; _i0_0 < new BigInteger(_nw0.Length); _i0_0++) {
         _nw0[(int)(_i0_0)] = _init0(_i0_0);
       }
