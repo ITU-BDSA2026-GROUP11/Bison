@@ -15,4 +15,6 @@ public class Observation : Post
 
     // Taxon proposals for this observation
     public List<Proposal> Proposals { get; set; } = new();
+
+    public string? ImgPath {get; set;}
 }
