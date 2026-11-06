@@ -1,5 +1,5 @@
-using Bison.Razor;
-using Bison.Razor.Models;
+using Bison.Infastructure;
+using Bison.Core.Models;
 
 namespace Bison.Tests;
 

@@ -1,5 +1,5 @@
-using Bison.Razor.DTO;
-using Bison.Razor.Models;
+using Bison.Infastructure.DTO;
+using Bison.Infastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
