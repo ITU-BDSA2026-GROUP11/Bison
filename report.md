@@ -5,6 +5,9 @@ Torkil á Torkilsheyggi [toat@itu.dk](mailto:toat@itu.dk) github:toat42 <br>
 Samuel Bech Gayne [sgay@itu.dk](mailto:sgay@itu.dk) github:SamBGCode <br>
 Oliver Riis Schytt [olrs@itu.dk](mailto:olrs@itu.dk) github:Oliver327e
 
+Link to Azure Website <br>
+https://bdsagroup11bison-crhsanhra4h2e9bt.denmarkeast-01.azurewebsites.net/
+
 ## 1 Design and Architecture of *Bison*
 
 ### 1.1 Domain model
