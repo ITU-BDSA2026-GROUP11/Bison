@@ -2,9 +2,7 @@
 
 ITU BDSA 2026 Group 11  
 Torkil á Torkilsheyggi [toat@itu.dk](mailto:toat@itu.dk) github:toat42
-
 Samuel Bech Gayne [sgay@itu.dk](mailto:sgay@itu.dk) github:SamBGCode
-
 Oliver Riis Schytt [olrs@itu.dk](mailto:olrs@itu.dk) github:Oliver327e
 
 ## 1 Design and Architecture of *Bison*
