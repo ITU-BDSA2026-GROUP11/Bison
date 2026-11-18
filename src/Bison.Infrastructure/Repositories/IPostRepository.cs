@@ -31,4 +31,10 @@ public interface IPostRepository
 
     // Returns all taxa (id and display name), sorted by name
     List<TaxonDTO> GetAllTaxa();
+
+    // Stores a new comment on an observation and returns its id
+    int CreateComment(int observationId, int authorId, string text);
+
+    // Stores a new taxon proposal on an observation and returns its id
+    int CreateProposal(int observationId, int authorId, int taxonId, string text);
 }
