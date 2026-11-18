@@ -28,12 +28,20 @@
         <ul id="proposallist" class="observations">
             @foreach (var proposal in Model.Proposals)
             {
+                var taxonName = Model.TaxonNames.TryGetValue(proposal.TaxonId, out var name)
+                    ? name
+                    : $"Taxon {proposal.TaxonId}";
+
                 <li>
                     <p>
                         <strong>
                             <a href="/obs/@proposal.Author">@proposal.Author</a>
                         </strong>
-                        proposes taxon <code>@proposal.TaxonId</code>
+                        proposes <em>@taxonName</em>
+                        @if (!string.IsNullOrWhiteSpace(proposal.Text))
+                        {
+                            <span>: @proposal.Text</span>
+                        }
                         <small>&mdash; @proposal.TimeStamp</small>
                     </p>
                 </li>
@@ -43,6 +51,32 @@
     else
     {
         <em>There are no proposals for this observation so far.</em>
+    }
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="observationbox">
+            <h3>Propose another animal, @(User.Identity.Name)</h3>
+            <form method="post" asp-page-handler="Proposal" asp-route-id="@obs.PostId">
+                <select asp-for="ProposalTaxonId" asp-items="Model.TaxonOptions">
+                    <option value="">-- choose a taxon --</option>
+                </select>
+                <input style="float: left" type="text" asp-for="ProposalText" placeholder="Why? (optional)" />
+                <input type="submit" value="Propose" />
+            </form>
+
+            @if (Model.ProposalError != null)
+            {
+                <p role="alert" style="color: red; clear: both">@Model.ProposalError</p>
+            }
+        </div>
+    }
+    else
+    {
+        <p>
+            <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Request.Path">Log in</a>
+            to propose another animal.
+        </p>
     }
 
     <h3>Comments</h3>
