@@ -46,6 +46,7 @@ public interface IObservationService
     // Returns all taxon proposals on an observation, oldest first
     public List<proposalDTO> GetProposals(int observationId);
 
+    public Task addObservation(string text, int authorID, int taxonId);
     // Adds a comment to an observation.
     // Fails if the text is empty, the observation does not exist, or saving fails.
     public PostResult AddComment(int observationId, int authorId, string? text);

@@ -111,6 +111,10 @@ public class ObservationService : IObservationService
         return _repository.GetProposals(observationId);
     }
 
+    public async Task addObservation(string text, int authorID, int taxonId)
+    {
+        await _repository.addObservation(text, authorID, taxonId);
+    }
     // Validates and stores a new comment
     public PostResult AddComment(int observationId, int authorId, string? text)
     {

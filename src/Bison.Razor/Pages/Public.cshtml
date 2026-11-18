@@ -10,6 +10,25 @@
 
 <div>
     <h2> Public Timeline </h2>
+            @if(User.Identity?.IsAuthenticated == true){
+                <div class="observationbox">
+
+                <h3>What did you see, @(User.Identity.Name)?</h3>
+                <form method="post">
+                    <input style="float: left" type="text" asp-for="Text" name="InputObs">
+                    <select asp-for="SelectedTaxonId">
+                        <option value="">Select a taxon...</option>
+                    @foreach (var taxon in Model.Taxa)
+                            {
+                                <option value="@taxon.TaxonId">@taxon.Name</option>
+                            }
+                    </select>
+                    <input type="submit" value="Share">
+                </form>
+                 </div>
+            }
+            
+       
 
     <form method="get" class="taxon-filter">
         <label for="taxon">Filter by taxon:</label>
