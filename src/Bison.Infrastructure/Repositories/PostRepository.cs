@@ -165,4 +165,43 @@ public class PostRepository : IPostRepository
             .OrderBy(t => t.Name)
             .ToList();
     }
+
+
+    // Store a new comment on an observation
+    public int CreateComment(int observationId, int authorId, string text)
+    {
+        var comment = new Comment
+        {
+            ObservationId = observationId,
+            AuthorId = authorId,
+            Text = text,
+            TimeStamp = DateTime.Now
+        };
+
+        _context.Comments.Add(comment);
+        _context.SaveChanges();
+
+        // EF Core fills in the generated id after saving
+        return comment.PostId;
+    }
+
+
+    // Store a new taxon proposal on an observation
+    public int CreateProposal(int observationId, int authorId, int taxonId, string text)
+    {
+        var proposal = new Proposal
+        {
+            ObservationId = observationId,
+            AuthorId = authorId,
+            TaxonId = taxonId,
+            Text = text,
+            TimeStamp = DateTime.Now
+        };
+
+        _context.Proposals.Add(proposal);
+        _context.SaveChanges();
+
+        // EF Core fills in the generated id after saving
+        return proposal.PostId;
+    }
 }
