@@ -1,6 +1,7 @@
 using Bison.Infastructure.DTO;
 using Bison.Core.Models;
 using Bison.Infastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bison.Infastructure;
 
@@ -113,5 +114,58 @@ public class ObservationService : IObservationService
     public async Task addObservation(string text, int authorID, int taxonId)
     {
         await _repository.addObservation(text, authorID, taxonId);
+    // Validates and stores a new comment
+    public PostResult AddComment(int observationId, int authorId, string? text)
+    {
+        // A comment must contain text
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return PostResult.Fail("A comment cannot be empty.");
+        }
+
+        // The observation must exist
+        if (_repository.GetObservation(observationId) == null)
+        {
+            return PostResult.Fail("This observation does not exist.");
+        }
+
+        try
+        {
+            _repository.CreateComment(observationId, authorId, text.Trim());
+            return PostResult.Ok();
+        }
+        catch (DbUpdateException)
+        {
+            // Saving failed, so nothing was stored
+            return PostResult.Fail("Your comment could not be saved. Please try again.");
+        }
+    }
+
+    // Validates and stores a new taxon proposal
+    public PostResult AddProposal(int observationId, int authorId, int taxonId, string? text)
+    {
+        // The observation must exist
+        if (_repository.GetObservation(observationId) == null)
+        {
+            return PostResult.Fail("This observation does not exist.");
+        }
+
+        // The proposed taxon must exist
+        if (_repository.GetTaxon(taxonId) == null)
+        {
+            return PostResult.Fail("Please choose a valid taxon.");
+        }
+
+        try
+        {
+            // The reason is optional, so store an empty string if none was given
+            _repository.CreateProposal(observationId, authorId, taxonId, text?.Trim() ?? "");
+            return PostResult.Ok();
+        }
+        catch (DbUpdateException)
+        {
+            // Saving failed, so nothing was stored
+            return PostResult.Fail("Your proposal could not be saved. Please try again.");
+        }
     }
 }
