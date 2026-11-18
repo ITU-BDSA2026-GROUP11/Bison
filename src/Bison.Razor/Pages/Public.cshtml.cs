@@ -62,9 +62,10 @@ public class PublicModel : PageModel
     
     public async Task<IActionResult> OnPostAsync()
     {
+
         Console.WriteLine("Hello world");
         var currentlyUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
+
 
         if (SelectedTaxonId == null)
         {
