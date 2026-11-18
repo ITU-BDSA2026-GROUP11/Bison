@@ -19,7 +19,7 @@ public class PublicModel : PageModel
     public List<TaxonDTO> Taxa { get; set; } = new();
 
     // The taxon currently filtered by, or null when showing all observations
-    public int? SelectedTaxonId { get; set; }
+    [BindProperty]public int? SelectedTaxonId { get; set; }
 
     // Display name of the selected taxon, or null when showing all observations
     public string? SelectedTaxonName { get; set; }
@@ -64,8 +64,16 @@ public class PublicModel : PageModel
     {
         Console.WriteLine("Hello world");
         var currentlyUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
 
-        await _service.addObservation(InputObs,)
+        if (SelectedTaxonId == null)
+        {
+        Taxa = _service.GetAllTaxa();
+        ModelState.AddModelError("", "Please select a taxon.");
+        return Page();
+        }
+
+        await _service.addObservation(InputObs, int.Parse(currentlyUserId), SelectedTaxonId.Value);
         return RedirectToPage("Public");
     }
 }

@@ -110,8 +110,8 @@ public class ObservationService : IObservationService
         return _repository.GetProposals(observationId);
     }
 
-    public async Task addObservation(string text, Author author)
+    public async Task addObservation(string text, int authorID, int taxonId)
     {
-        await _repository.addObservation(text, author);
+        await _repository.addObservation(text, authorID, taxonId);
     }
 }
