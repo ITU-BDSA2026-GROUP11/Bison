@@ -1,0 +1,15 @@
+# .mailmap — maps all commit identities to one canonical identity per group member
+# Format: Proper Name <proper@email> <email used in commit>
+
+# Oliver
+Oliver Riis Schytt <olrs@itu.dk> <olrs@itu.dk>
+Oliver Riis Schytt <olrs@itu.dk> <133348453+Oliver327e@users.noreply.github.com>
+Oliver Riis Schytt <olrs@itu.dk> <oliver327e@gmail.com>
+
+# Samuel
+Samuel Bech Gayne <sgay@itu.dk> <sgay@itu.dk>
+Samuel Bech Gayne <sgay@itu.dk> <131140149+SamBGCode@users.noreply.github.com>
+
+# Torkil
+Torkil á Torkilsheyggi <toat@itu.dk> <toat@itu.dk>
+Torkil á Torkilsheyggi <toat@itu.dk> <toat.itu.dk>
