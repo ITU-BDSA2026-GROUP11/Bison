@@ -34,5 +34,5 @@ public interface IPostRepository
 
     //Adding observation
 
-    Task addObservation(string text, string AuthorId);
+    Task addObservation(string text, int authorID, int taxonId);
 }

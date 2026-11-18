@@ -181,6 +181,7 @@ public class PostRepository : IPostRepository
             //PostId = getFirst[0].PostId         
         };
 
+       
         _context.Observations.Add(newObservation);
 
         await _context.SaveChangesAsync();
