@@ -3,6 +3,7 @@ using Bison.Core.Models;
 using Bison.Infastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication;
 
 // Create the web application
 var builder = WebApplication.CreateBuilder(args);
@@ -35,11 +36,13 @@ if (!string.IsNullOrWhiteSpace(githubClientId) && !string.IsNullOrWhiteSpace(git
 {
     builder.Services.AddAuthentication().AddGitHub(options =>
     {
+
         options.ClientId = githubClientId;
         options.ClientSecret = githubClientSecret;
         options.CallbackPath = "/signin-github";
         options.SignInScheme = IdentityConstants.ExternalScheme;
         options.Scope.Add("user:email");
+        options.ClaimActions.MapJsonKey("urn:github:display_name","name");
     });
 }
 
@@ -63,7 +66,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<BisonDBContext>();
-    
+
     context.Database.Migrate();
     DbInitializer.SeedDatabase(context);
 

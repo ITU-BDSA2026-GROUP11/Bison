@@ -33,7 +33,7 @@ public class PostRepository : IPostRepository
         return observations.Select(o => new PostDTO
         {
             PostId = o.PostId,
-            Author = o.Author.Name,
+            Author = !string.IsNullOrWhiteSpace(o.Author.Name)? o.Author.Name: "Unknown user",
             Text = o.Text,
             TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss")
         }).ToList();
@@ -50,7 +50,7 @@ public class PostRepository : IPostRepository
 
         var observations = _context.Observations
             .Include(o => o.Author)
-            .Where(o => o.Author.Name == author)
+            .Where(o => o.Author.UserName == author)
             .OrderByDescending(o => o.TimeStamp)
             .ThenByDescending(o => o.PostId)
             .Skip(offset)
@@ -60,7 +60,7 @@ public class PostRepository : IPostRepository
         return observations.Select(o => new PostDTO
         {
             PostId = o.PostId,
-            Author = o.Author.Name,
+            Author = o.Author.UserName ?? "Unknown",
             Text = o.Text,
             TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss")
         }).ToList();
@@ -82,7 +82,7 @@ public class PostRepository : IPostRepository
         return new PostDTO
         {
             PostId = observation.PostId,
-            Author = observation.Author.Name,
+            Author = observation.Author.UserName ?? "Unknown",
             Text = observation.Text,
             TimeStamp = observation.TimeStamp.ToString("MM/dd/yy H:mm:ss")
         };
@@ -176,12 +176,12 @@ public class PostRepository : IPostRepository
         {
             Text = text,
             AuthorId = authorID,
-            TimeStamp = DateTime.Now,  
+            TimeStamp = DateTime.Now,
             TaxonId = taxonId
             //PostId = getFirst[0].PostId         
         };
 
-       
+
         _context.Observations.Add(newObservation);
 
         await _context.SaveChangesAsync();
