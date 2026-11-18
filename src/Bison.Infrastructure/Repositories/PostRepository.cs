@@ -165,4 +165,23 @@ public class PostRepository : IPostRepository
             .OrderBy(t => t.Name)
             .ToList();
     }
+
+    //Input Observation
+    public async Task addObservation(string text, int authorID, int taxonId)
+    {
+        //List<PostDTO> getFirst = GetObservations(1, 1);
+
+        //var author = _context.Authors.Include(a => a.Name).FirstOrDefault(a => a.AuthorId == authorID);
+        var newObservation = new Observation
+        {
+            Text = text,
+            AuthorId = authorID,
+            TimeStamp = DateTime.Now,  
+            TaxonId = taxonId
+            //PostId = getFirst[0].PostId         
+        };
+
+        Console.WriteLine("New obs recieved");
+    }
+
 }

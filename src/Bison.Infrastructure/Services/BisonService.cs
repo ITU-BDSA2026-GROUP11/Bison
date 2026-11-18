@@ -37,4 +37,6 @@ public interface IObservationService
 
     // Returns all taxon proposals on an observation, oldest first
     public List<proposalDTO> GetProposals(int observationId);
+
+    public Task addObservation(string text, Author author);
 }

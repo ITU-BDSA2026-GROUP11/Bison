@@ -109,4 +109,9 @@ public class ObservationService : IObservationService
     {
         return _repository.GetProposals(observationId);
     }
+
+    public async Task addObservation(string text, Author author)
+    {
+        await _repository.addObservation(text, author);
+    }
 }

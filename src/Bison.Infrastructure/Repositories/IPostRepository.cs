@@ -31,4 +31,8 @@ public interface IPostRepository
 
     // Returns all taxa (id and display name), sorted by name
     List<TaxonDTO> GetAllTaxa();
+
+    //Adding observation
+
+    Task addObservation(string text, string AuthorId);
 }
