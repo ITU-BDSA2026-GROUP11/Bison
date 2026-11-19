@@ -14,7 +14,7 @@
                 <div class="observationbox">
 
                 <h3>What did you see, @(User.Identity.Name)?</h3>
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <input style="float: left" type="text" asp-for="Text" name="InputObs">
                     <select asp-for="SelectedTaxonId">
                         <option value="">Select a taxon...</option>
@@ -23,6 +23,7 @@
                                 <option value="@taxon.TaxonId">@taxon.Name</option>
                             }
                     </select>
+                    <input type="file" asp-for="InputPhoto" name="InputPhoto" />
                     <input type="submit" value="Share">
                 </form>
                  </div>

@@ -3,6 +3,7 @@ using Bison.Infastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
+using System.Runtime.InteropServices;
 
 namespace Bison.Razor.Pages;
 
@@ -25,6 +26,8 @@ public class PublicModel : PageModel
     public string? SelectedTaxonName { get; set; }
 
     [BindProperty] public required string InputObs {get; set;} = "";
+
+    [BindProperty] public IFormFile? InputPhoto {get; set;} = null;
     public PublicModel(IObservationService service)
     {
         _service = service;
@@ -66,6 +69,14 @@ public class PublicModel : PageModel
         Console.WriteLine("Hello world");
         var currentlyUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        var photoPath = "";
+        if (InputPhoto != null)
+        {
+            Directory.CreateDirectory("wwwroot/uploads");
+            photoPath = Path.Combine("wwwroot/uploads", InputPhoto.FileName);
+            await using var stream = new FileStream(photoPath, FileMode.Create);
+            await InputPhoto.CopyToAsync(stream);
+        }
 
         if (SelectedTaxonId == null)
         {
@@ -74,7 +85,7 @@ public class PublicModel : PageModel
         return Page();
         }
 
-        await _service.addObservation(InputObs, int.Parse(currentlyUserId), SelectedTaxonId.Value);
+        await _service.addObservation(InputObs, int.Parse(currentlyUserId), SelectedTaxonId.Value, photoPath);
         return RedirectToPage("Public");
     }
 }
