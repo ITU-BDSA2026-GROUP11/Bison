@@ -167,7 +167,7 @@ public class PostRepository : IPostRepository
     }
 
     //Input Observation
-    public async Task addObservation(string text, int authorID, int taxonId)
+    public async Task addObservation(string text, int authorID, int taxonId, string imgPath)
     {
         //List<PostDTO> getFirst = GetObservations(1, 1);
 
