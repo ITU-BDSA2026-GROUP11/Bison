@@ -14,6 +14,8 @@ public class PublicModel : PageModel
     public List<PostDTO> Observations { get; set; } = new();
     public int CurrentPage { get; set; }
 
+    public readonly IWebHostEnvironment _env;
+
     public string Text {get; set;}
 
     // All taxa for the taxon selector
@@ -28,9 +30,11 @@ public class PublicModel : PageModel
     [BindProperty] public required string InputObs {get; set;} = "";
 
     [BindProperty] public IFormFile? InputPhoto {get; set;} = null;
-    public PublicModel(IObservationService service)
+    public PublicModel(IObservationService service, IWebHostEnvironment env)
     {
         _service = service;
+        _env = env;
+
     }
 
     // Gets the page number and optional taxon from the URL, for example ?page=2&taxon=5
@@ -68,13 +72,15 @@ public class PublicModel : PageModel
 
         Console.WriteLine("Hello world");
         var currentlyUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
+        string finalPath = "";
         var photoPath = "";
         if (InputPhoto != null)
         {
             Directory.CreateDirectory("wwwroot/uploads");
-            photoPath = Path.Combine("wwwroot/uploads", InputPhoto.FileName);
-            await using var stream = new FileStream(photoPath, FileMode.Create);
+            //photoPath = Path.Combine("uploads", InputPhoto.FileName);
+            photoPath = "uploads/" + InputPhoto.FileName;
+            finalPath = Path.Combine(_env.WebRootPath, photoPath);
+            await using var stream = new FileStream(finalPath, FileMode.Create);
             await InputPhoto.CopyToAsync(stream);
         }
 

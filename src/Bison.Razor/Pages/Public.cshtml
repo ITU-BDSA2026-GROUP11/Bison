@@ -64,6 +64,13 @@
                         @obs.Text
                         <small>&mdash; <a href="/ob/@obs.PostId">@obs.TimeStamp</a></small>
                     </p>
+                    @if (obs.ImgPath != "")
+                    {
+                        <img src="@obs.ImgPath" alt="Image" width="100px" />
+                        //<p>
+                          //  @obs.ImgPath
+                        //</p>
+                    }
                 </li>
             }
         </ul>
