@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using System.Runtime.InteropServices;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace Bison.Razor.Pages;
 
@@ -74,8 +76,11 @@ public class PublicModel : PageModel
         var currentlyUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         string finalPath = "";
         var photoPath = "";
+        bool isImgValid = true;
+
         if (InputPhoto != null)
         {
+            isImgValid = isValidImgType(InputPhoto);
             Directory.CreateDirectory("wwwroot/uploads");
             //photoPath = Path.Combine("uploads", InputPhoto.FileName);
             photoPath = "uploads/" + InputPhoto.FileName;
@@ -91,7 +96,42 @@ public class PublicModel : PageModel
         return Page();
         }
 
+        int obsLength = InputObs.Length;
+        if (isImgValid && !string.IsNullOrEmpty(InputObs) && obsLength < 200)
+        {
         await _service.addObservation(InputObs, int.Parse(currentlyUserId), SelectedTaxonId.Value, photoPath);
+        }
         return RedirectToPage("Public");
     }
+
+    public bool isValidImgType(IFormFile InputFileImg)
+    {
+        byte[] checkFileBytes = new byte[8];
+        using var stream = InputFileImg.OpenReadStream();
+        stream.Read(checkFileBytes, 0, checkFileBytes.Length);
+
+        bool isPng = 
+        checkFileBytes[0] == 0x89 &&
+        checkFileBytes[1] == 0x50 &&
+        checkFileBytes[2] == 0x4E &&
+        checkFileBytes[3] == 0x47 &&
+        checkFileBytes[4] == 0x0D &&
+        checkFileBytes[5] == 0x0A &&
+        checkFileBytes[6] == 0x1A &&
+        checkFileBytes[7] == 0x0A;
+
+        bool isJpg = 
+        checkFileBytes[0] == 0xFF &&
+        checkFileBytes[1] == 0xD8 &&
+        checkFileBytes[2] == 0xFF;
+       
+        
+        if (!isPng && !isJpg){
+        return false;
+        }
+        return true;
+    }
+
+    
+    
 }

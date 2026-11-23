@@ -174,6 +174,7 @@ public class PostRepository : IPostRepository
         //List<PostDTO> getFirst = GetObservations(1, 1);
 
         //var author = _context.Authors.Include(a => a.Name).FirstOrDefault(a => a.AuthorId == authorID);
+
         var newObservation = new Observation
         {
             Text = text,
