@@ -85,8 +85,11 @@ public class PublicModel : PageModel
             //photoPath = Path.Combine("uploads", InputPhoto.FileName);
             photoPath = "uploads/" + InputPhoto.FileName;
             finalPath = Path.Combine(_env.WebRootPath, photoPath);
+            if (isImgValid)
+            {
             await using var stream = new FileStream(finalPath, FileMode.Create);
             await InputPhoto.CopyToAsync(stream);
+            }
         }
 
         if (SelectedTaxonId == null)

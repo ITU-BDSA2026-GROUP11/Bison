@@ -23,7 +23,7 @@
                                 <option value="@taxon.TaxonId">@taxon.Name</option>
                             }
                     </select>
-                    <input type="file" asp-for="InputPhoto" name="InputPhoto" />
+                    <input type="file" id="imageFile" asp-for="InputPhoto" name="InputPhoto" onchange="return imageValidation()"/>
                     <input type="submit" value="Share">
                 </form>
                  </div>
@@ -85,3 +85,20 @@
 
     <a href="?page=@(Model.CurrentPage + 1)@taxonQuery">Next</a>
 </div>
+
+<script>
+    function imageValidation() {
+    var imageInput = document.getElementById('imageFile');
+    var imagePath = imageInput.value;
+    var validExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+
+    if(!validExtensions.exec(imagePath)){
+        alert('Please upload a .png, .jpg, or .jpeg file');
+        imageInput.value = '';
+        return false;
+    }
+    else{
+        return true;
+    }
+    }
+</script>
