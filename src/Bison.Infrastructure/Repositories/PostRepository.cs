@@ -1,3 +1,4 @@
+
 using Bison.Infastructure.DTO;
 using Bison.Core.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,18 @@ public class PostRepository : IPostRepository
         _context = context;
     }
 
+    // Get the author's display name without exposing email addresses
+    private static string GetDisplayName(Author? author)
+    {
+        var name = author?.Name;
+
+        if (string.IsNullOrWhiteSpace(name) || name.Contains('@'))
+        {
+            return "Unknown user";
+        }
+
+        return name;
+    }
 
     // Get observations for the public timeline
     public List<PostDTO> GetObservations(int page, int pageSize)
@@ -33,13 +46,12 @@ public class PostRepository : IPostRepository
         return observations.Select(o => new PostDTO
         {
             PostId = o.PostId,
-            Author = !string.IsNullOrWhiteSpace(o.Author.Name)? o.Author.Name: "Unknown user",
+            Author = GetDisplayName(o.Author),
             Text = o.Text,
             TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss"),
             ImgPath = !string.IsNullOrWhiteSpace(o.ImgPath)? o.ImgPath: null
         }).ToList();
     }
-
 
     // Get observations from one specific author
     public List<PostDTO> GetObservationsFromAuthor(
@@ -51,7 +63,13 @@ public class PostRepository : IPostRepository
 
         var observations = _context.Observations
             .Include(o => o.Author)
-            .Where(o => o.Author.UserName == author)
+
+            // Fictive authors are found by Name.
+            // Registered users can also be found by UserName.
+            .Where(o =>
+                o.Author.Name == author ||
+                o.Author.UserName == author)
+
             .OrderByDescending(o => o.TimeStamp)
             .ThenByDescending(o => o.PostId)
             .Skip(offset)
@@ -61,13 +79,12 @@ public class PostRepository : IPostRepository
         return observations.Select(o => new PostDTO
         {
             PostId = o.PostId,
-            Author = o.Author.UserName ?? "Unknown",
+            Author = GetDisplayName(o.Author),
             Text = o.Text,
             TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss"),
             ImgPath = o.ImgPath
         }).ToList();
     }
-
 
     // Get one observation by its ID
     public PostDTO? GetObservation(int id)
@@ -84,13 +101,12 @@ public class PostRepository : IPostRepository
         return new PostDTO
         {
             PostId = observation.PostId,
-            Author = observation.Author.UserName ?? "Unknown",
+            Author = GetDisplayName(observation.Author),
             Text = observation.Text,
             TimeStamp = observation.TimeStamp.ToString("MM/dd/yy H:mm:ss"),
             ImgPath = observation.ImgPath
         };
     }
-
 
     // Get comments belonging to an observation
     public List<PostDTO> GetComments(int observationId)
@@ -104,12 +120,11 @@ public class PostRepository : IPostRepository
         return comments.Select(c => new PostDTO
         {
             PostId = c.PostId,
-            Author = c.Author.Name,
+            Author = GetDisplayName(c.Author),
             Text = c.Text,
             TimeStamp = c.TimeStamp.ToString("MM/dd/yy H:mm:ss")
         }).ToList();
     }
-
 
     // Get proposals belonging to an observation
     public List<proposalDTO> GetProposals(int observationId)
@@ -123,19 +138,19 @@ public class PostRepository : IPostRepository
         return proposals.Select(p => new proposalDTO
         {
             TaxonId = p.TaxonId,
-            Author = p.Author.Name,
+            Author = GetDisplayName(p.Author),
             Text = p.Text,
             TimeStamp = p.TimeStamp.ToString("MM/dd/yy H:mm:ss")
         }).ToList();
     }
 
-
     // Get all observations with their taxon and the taxon's full parent chain
     public List<Observation> GetAllObservationsWithTaxa()
     {
-        // Load every taxon into the context. EF Core then links each
-        // taxon's Parent to the already-loaded parent object, so the
-        // whole chain up to the root is available for IsSubTaxon.
+        // Load every taxon into the context.
+        // EF Core then links each taxon's Parent to the already-loaded
+        // parent object, so the whole chain up to the root is available
+        // for IsSubTaxon.
         _context.Taxons.Load();
 
         return _context.Observations
@@ -146,13 +161,11 @@ public class PostRepository : IPostRepository
             .ToList();
     }
 
-
     // Get one taxon by its ID
     public Taxon? GetTaxon(int taxonId)
     {
         return _context.Taxons.Find(taxonId);
     }
-
 
     // Get all taxa for the taxon selector, sorted by display name
     public List<TaxonDTO> GetAllTaxa()
@@ -162,39 +175,45 @@ public class PostRepository : IPostRepository
             .Select(t => new TaxonDTO
             {
                 TaxonId = t.TaxonId,
-                // Some taxa have no vernacular name, so fall back to the Darwin Core id
-                Name = t.VernacularName ?? t.dwc_TaxonID ?? $"Taxon {t.TaxonId}"
+
+                // Some taxa have no vernacular name,
+                // so fall back to the Darwin Core ID.
+                Name = t.VernacularName
+                    ?? t.dwc_TaxonID
+                    ?? $"Taxon {t.TaxonId}"
             })
             .OrderBy(t => t.Name)
             .ToList();
     }
 
-    //Input Observation
-    public async Task addObservation(string text, int authorID, int taxonId, string imgPath)
+    // Create a new observation with an optional image
+    public async Task addObservation(
+        string text,
+        int authorID,
+        int taxonId,
+        string? imgPath = null)
     {
-        //List<PostDTO> getFirst = GetObservations(1, 1);
-
-        //var author = _context.Authors.Include(a => a.Name).FirstOrDefault(a => a.AuthorId == authorID);
-
         var newObservation = new Observation
         {
             Text = text,
             AuthorId = authorID,
             TimeStamp = DateTime.Now,
             TaxonId = taxonId,
-            ImgPath = imgPath     
+            ImgPath = imgPath
         };
-
 
         _context.Observations.Add(newObservation);
 
         await _context.SaveChangesAsync();
-        Console.WriteLine("New obs recieved");
+
+        Console.WriteLine("New obs received");
     }
 
-
     // Store a new comment on an observation
-    public int CreateComment(int observationId, int authorId, string text)
+    public int CreateComment(
+        int observationId,
+        int authorId,
+        string text)
     {
         var comment = new Comment
         {
@@ -207,13 +226,16 @@ public class PostRepository : IPostRepository
         _context.Comments.Add(comment);
         _context.SaveChanges();
 
-        // EF Core fills in the generated id after saving
+        // EF Core fills in the generated ID after saving
         return comment.PostId;
     }
 
-
     // Store a new taxon proposal on an observation
-    public int CreateProposal(int observationId, int authorId, int taxonId, string text)
+    public int CreateProposal(
+        int observationId,
+        int authorId,
+        int taxonId,
+        string text)
     {
         var proposal = new Proposal
         {
@@ -227,7 +249,7 @@ public class PostRepository : IPostRepository
         _context.Proposals.Add(proposal);
         _context.SaveChanges();
 
-        // EF Core fills in the generated id after saving
+        // EF Core fills in the generated ID after saving
         return proposal.PostId;
     }
 }
