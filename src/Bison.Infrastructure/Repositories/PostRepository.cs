@@ -63,7 +63,8 @@ public class PostRepository : IPostRepository
             PostId = o.PostId,
             Author = o.Author.UserName ?? "Unknown",
             Text = o.Text,
-            TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+            TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss"),
+            ImgPath = o.ImgPath
         }).ToList();
     }
 
