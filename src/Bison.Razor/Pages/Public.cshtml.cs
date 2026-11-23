@@ -3,6 +3,9 @@ using Bison.Infastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
+using System.Runtime.InteropServices;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace Bison.Razor.Pages;
 
@@ -12,6 +15,8 @@ public class PublicModel : PageModel
 
     public List<PostDTO> Observations { get; set; } = new();
     public int CurrentPage { get; set; }
+
+    public readonly IWebHostEnvironment _env;
 
     public string Text {get; set;}
 
@@ -25,9 +30,13 @@ public class PublicModel : PageModel
     public string? SelectedTaxonName { get; set; }
 
     [BindProperty] public required string InputObs {get; set;} = "";
-    public PublicModel(IObservationService service)
+
+    [BindProperty] public IFormFile? InputPhoto {get; set;} = null;
+    public PublicModel(IObservationService service, IWebHostEnvironment env)
     {
         _service = service;
+        _env = env;
+
     }
 
     // Gets the page number and optional taxon from the URL, for example ?page=2&taxon=5
@@ -65,7 +74,23 @@ public class PublicModel : PageModel
 
         Console.WriteLine("Hello world");
         var currentlyUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string finalPath = "";
+        var photoPath = "";
+        bool isImgValid = true;
 
+        if (InputPhoto != null)
+        {
+            isImgValid = isValidImgType(InputPhoto);
+            Directory.CreateDirectory("wwwroot/uploads");
+            //photoPath = Path.Combine("uploads", InputPhoto.FileName);
+            photoPath = "uploads/" + InputPhoto.FileName;
+            finalPath = Path.Combine(_env.WebRootPath, photoPath);
+            if (isImgValid)
+            {
+            await using var stream = new FileStream(finalPath, FileMode.Create);
+            await InputPhoto.CopyToAsync(stream);
+            }
+        }
 
         if (SelectedTaxonId == null)
         {
@@ -74,7 +99,42 @@ public class PublicModel : PageModel
         return Page();
         }
 
-        await _service.addObservation(InputObs, int.Parse(currentlyUserId), SelectedTaxonId.Value);
+        int obsLength = InputObs.Length;
+        if (isImgValid && !string.IsNullOrEmpty(InputObs) && obsLength < 200)
+        {
+        await _service.addObservation(InputObs, int.Parse(currentlyUserId), SelectedTaxonId.Value, photoPath);
+        }
         return RedirectToPage("Public");
     }
+
+    public bool isValidImgType(IFormFile InputFileImg)
+    {
+        byte[] checkFileBytes = new byte[8];
+        using var stream = InputFileImg.OpenReadStream();
+        stream.Read(checkFileBytes, 0, checkFileBytes.Length);
+
+        bool isPng = 
+        checkFileBytes[0] == 0x89 &&
+        checkFileBytes[1] == 0x50 &&
+        checkFileBytes[2] == 0x4E &&
+        checkFileBytes[3] == 0x47 &&
+        checkFileBytes[4] == 0x0D &&
+        checkFileBytes[5] == 0x0A &&
+        checkFileBytes[6] == 0x1A &&
+        checkFileBytes[7] == 0x0A;
+
+        bool isJpg = 
+        checkFileBytes[0] == 0xFF &&
+        checkFileBytes[1] == 0xD8 &&
+        checkFileBytes[2] == 0xFF;
+       
+        
+        if (!isPng && !isJpg){
+        return false;
+        }
+        return true;
+    }
+
+    
+    
 }

@@ -14,7 +14,7 @@
                 <div class="observationbox">
 
                 <h3>What did you see, @(User.Identity.Name)?</h3>
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <input style="float: left" type="text" asp-for="Text" name="InputObs">
                     <select asp-for="SelectedTaxonId">
                         <option value="">Select a taxon...</option>
@@ -23,6 +23,7 @@
                                 <option value="@taxon.TaxonId">@taxon.Name</option>
                             }
                     </select>
+                    <input type="file" id="imageFile" asp-for="InputPhoto" name="InputPhoto" onchange="return imageValidation()"/>
                     <input type="submit" value="Share">
                 </form>
                  </div>
@@ -63,6 +64,12 @@
                         @obs.Text
                         <small>&mdash; <a href="/ob/@obs.PostId">@obs.TimeStamp</a></small>
                     </p>
+                    @if (!string.IsNullOrEmpty(obs.ImgPath))
+                        {
+                        //string path = "/" + @obs.ImgPath;
+                        <img src="@obs.ImgPath" alt="Image" width="250px" />
+                        }
+                    
                 </li>
             }
         </ul>
@@ -78,3 +85,20 @@
 
     <a href="?page=@(Model.CurrentPage + 1)@taxonQuery">Next</a>
 </div>
+
+<script>
+    function imageValidation() {
+    var imageInput = document.getElementById('imageFile');
+    var imagePath = imageInput.value;
+    var validExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+
+    if(!validExtensions.exec(imagePath)){
+        alert('Please upload a .png, .jpg, or .jpeg file');
+        imageInput.value = '';
+        return false;
+    }
+    else{
+        return true;
+    }
+    }
+</script>
