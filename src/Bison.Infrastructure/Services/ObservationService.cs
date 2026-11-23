@@ -76,7 +76,8 @@ public class ObservationService : IObservationService
                 PostId = o.PostId,
                 Author = o.Author.Name,
                 Text = o.Text,
-                TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+                TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss"),
+                ImgPath = o.ImgPath
             })
             .ToList();
     }

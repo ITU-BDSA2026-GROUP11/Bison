@@ -35,7 +35,8 @@ public class PostRepository : IPostRepository
             PostId = o.PostId,
             Author = !string.IsNullOrWhiteSpace(o.Author.Name)? o.Author.Name: "Unknown user",
             Text = o.Text,
-            TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+            TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss"),
+            ImgPath = !string.IsNullOrWhiteSpace(o.ImgPath)? o.ImgPath: null
         }).ToList();
     }
 
@@ -84,7 +85,8 @@ public class PostRepository : IPostRepository
             PostId = observation.PostId,
             Author = observation.Author.UserName ?? "Unknown",
             Text = observation.Text,
-            TimeStamp = observation.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+            TimeStamp = observation.TimeStamp.ToString("MM/dd/yy H:mm:ss"),
+            ImgPath = observation.ImgPath
         };
     }
 
@@ -177,8 +179,8 @@ public class PostRepository : IPostRepository
             Text = text,
             AuthorId = authorID,
             TimeStamp = DateTime.Now,
-            TaxonId = taxonId
-            //PostId = getFirst[0].PostId         
+            TaxonId = taxonId,
+            ImgPath = imgPath     
         };
 
 

@@ -9,4 +9,6 @@ public class PostDTO
     public required string TimeStamp { get; set;}
 
     public int PostId { get; set; }
+
+    public string? ImgPath {get; set; }
 }
