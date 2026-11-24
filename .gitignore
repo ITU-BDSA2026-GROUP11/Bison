@@ -486,7 +486,7 @@ $RECYCLE.BIN/
 # Folder Costumization and other things get ignored.
 .vscode/settings.json
 
-# E2E test database and SQLite temporary files
+# E2E test database
 bison-e2e.db*
 
 src/Bison.Razor/bisonDB*
