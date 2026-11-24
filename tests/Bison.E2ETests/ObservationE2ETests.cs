@@ -226,4 +226,32 @@ public class ObservationE2ETests : PageTest
             Is.Null.Or.Empty,
             errors);
     }
+
+    // TEST 5: UI Testing
+    [Test]
+    public async Task ObservationBox_OnlyVisibleWhenLoggedIn()
+    {
+        // Visit the public timeline without logging in
+        await Page.GotoAsync($"{BaseUrl}/obs");
+
+        // Observation box should NOT exist
+        await Expect(Page.GetByTestId("observation-text"))
+            .ToHaveCountAsync(0);
+
+        // Register a new user (automatically signs them in)
+        await RegisterUser();
+
+        // Return to the public timeline
+        await Page.GotoAsync($"{BaseUrl}/obs");
+
+        // Observation box should now be visible
+        await Expect(Page.GetByTestId("observation-text"))
+            .ToBeVisibleAsync();
+
+        await Expect(Page.GetByTestId("observation-taxon"))
+            .ToBeVisibleAsync();
+
+        await Expect(Page.GetByTestId("observation-submit"))
+            .ToBeVisibleAsync();
+    }
 }
