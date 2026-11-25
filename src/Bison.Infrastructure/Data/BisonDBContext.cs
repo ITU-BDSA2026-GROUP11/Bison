@@ -43,6 +43,8 @@ public class BisonDBContext : IdentityDbContext<Author, IdentityRole<int>, int>
         // Observation belongs to a Taxon
         modelBuilder.Entity<Observation>().HasOne(o => o.Taxon).WithMany().HasForeignKey(o => o.TaxonId);
 
+        //modelBuilder.Entity<Observation>().HasOne(o => o.ImgPath).WithOne();
+
         // Comment belongs to an Observation
         modelBuilder.Entity<Comment>().HasOne(c => c.Observation).WithMany(o => o.Comments).HasForeignKey(c => c.ObservationId);
 

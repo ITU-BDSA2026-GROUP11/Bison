@@ -34,7 +34,7 @@ public interface IPostRepository
 
     //Adding observation
 
-    Task addObservation(string text, int authorID, int taxonId);
+    Task addObservation(string text, int authorID, int taxonId, string imgPath);
     // Stores a new comment on an observation and returns its id
     int CreateComment(int observationId, int authorId, string text);
 

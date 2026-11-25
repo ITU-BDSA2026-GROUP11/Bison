@@ -154,12 +154,13 @@ div.page ul.observations li {
   min-height: 48px;
 }
 
+
 div.page ul.observations p {
   margin: 0;
 }
 
 div.page ul.observations li img {
-  float: left;
+  float: block;
   padding: 0 10px 0 0;
 }
 

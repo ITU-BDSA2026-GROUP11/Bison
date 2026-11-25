@@ -48,7 +48,8 @@ public class PostRepository : IPostRepository
             PostId = o.PostId,
             Author = GetDisplayName(o.Author),
             Text = o.Text,
-            TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+            TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss"),
+            ImgPath = !string.IsNullOrWhiteSpace(o.ImgPath)? o.ImgPath: null
         }).ToList();
     }
 
@@ -80,7 +81,8 @@ public class PostRepository : IPostRepository
             PostId = o.PostId,
             Author = GetDisplayName(o.Author),
             Text = o.Text,
-            TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+            TimeStamp = o.TimeStamp.ToString("MM/dd/yy H:mm:ss"),
+            ImgPath = o.ImgPath
         }).ToList();
     }
 
@@ -101,7 +103,8 @@ public class PostRepository : IPostRepository
             PostId = observation.PostId,
             Author = GetDisplayName(observation.Author),
             Text = observation.Text,
-            TimeStamp = observation.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+            TimeStamp = observation.TimeStamp.ToString("MM/dd/yy H:mm:ss"),
+            ImgPath = observation.ImgPath
         };
     }
 
@@ -183,18 +186,20 @@ public class PostRepository : IPostRepository
             .ToList();
     }
 
-    // Create a new observation
+    // Create a new observation with an optional image
     public async Task addObservation(
         string text,
         int authorID,
-        int taxonId)
+        int taxonId,
+        string? imgPath = null)
     {
         var newObservation = new Observation
         {
             Text = text,
             AuthorId = authorID,
             TimeStamp = DateTime.Now,
-            TaxonId = taxonId
+            TaxonId = taxonId,
+            ImgPath = imgPath
         };
 
         _context.Observations.Add(newObservation);

@@ -33,6 +33,10 @@
                 @obs.Text
                 <small>&mdash; @obs.TimeStamp</small>
             </p>
+            @if (!string.IsNullOrWhiteSpace(obs.ImgPath))
+            {
+            <img src="/@obs.ImgPath" alt="Image" width="350" />
+            }
         </li>
     </ul>
 
