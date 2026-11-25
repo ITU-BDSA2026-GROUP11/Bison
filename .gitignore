@@ -483,7 +483,10 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
+# Folder Costumization and other things get ignored.
 .vscode/settings.json
 
+# E2E test database
+bison-e2e.db*
 
 src/Bison.Razor/bisonDB*

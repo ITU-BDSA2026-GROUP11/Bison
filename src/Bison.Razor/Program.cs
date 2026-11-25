@@ -11,6 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Database connection
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Database connection string not found.");
 
+if (builder.Environment.IsEnvironment("E2E"))
+{
+    connectionString = builder.Configuration["BISON_E2E_CONNECTION"]
+        ?? throw new InvalidOperationException("An E2E database connection is required.");
+}
+
 // Register EF Core with SQLite
 builder.Services.AddDbContext<BisonDBContext>(options => options.UseSqlite(connectionString));
 
@@ -42,7 +48,7 @@ if (!string.IsNullOrWhiteSpace(githubClientId) && !string.IsNullOrWhiteSpace(git
         options.CallbackPath = "/signin-github";
         options.SignInScheme = IdentityConstants.ExternalScheme;
         options.Scope.Add("user:email");
-        options.ClaimActions.MapJsonKey("urn:github:display_name","name");
+        options.ClaimActions.MapJsonKey("urn:github:display_name", "name");
     });
 }
 

@@ -1,11 +1,11 @@
 body {
   background: #eccaca;
-  font-family: 'Trebuchet MS', sans-serif;
+  font-family: "Trebuchet MS", sans-serif;
   font-size: 14px;
 }
 
 a {
-  color: #26776F;
+  color: #26776f;
 }
 
 a:hover {
@@ -16,22 +16,22 @@ input[type="email"],
 input[type="text"],
 input[type="tel"],
 input[type="password"] {
-    background: white;
-    border: 1px solid #e6c0bf;
-    padding: 2px;
-    font-family: 'Trebuchet MS', sans-serif;
-    font-size: 14px;
-    border-radius: 2px;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    color: #571010;
+  background: white;
+  border: 1px solid #e6c0bf;
+  padding: 2px;
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 14px;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  color: #571010;
 }
 
 input[type="submit"] {
   background: #571010;
   border: 1px solid #3b0707;
   padding: 1px 3px;
-  font-family: 'Trebuchet MS', sans-serif;
+  font-family: "Trebuchet MS", sans-serif;
   font-size: 14px;
   font-weight: bold;
   border-radius: 2px;
@@ -40,6 +40,8 @@ input[type="submit"] {
   color: white;
 }
 
+/* Main page */
+
 div.page {
   background: white;
   border: 1px solid #cc6e6e;
@@ -47,7 +49,9 @@ div.page {
   margin: 30px auto;
 }
 
-div.page > h1 {
+/* Header - updated for semantic header element */
+
+div.page > header > h1 {
   background: #cc6e6e;
   margin: 0;
   padding: 10px 14px;
@@ -62,12 +66,14 @@ div.page h1 img {
   height: 1em;
 }
 
+/* Navigation */
+
 div.page div.navigation {
-  background: #DEE9E8;
+  background: #dee9e8;
   padding: 4px 10px;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #eee;
-  color: #888;
+  color: #555;
   font-size: 12px;
   letter-spacing: 0.5px;
 }
@@ -78,21 +84,23 @@ div.page div.navigation a {
 }
 
 div.page div.navigation form {
-    display: contents;
+  display: contents;
 }
 
 div.page div.navigation form button {
-    padding: unset;
-    background: unset;
-    color: #444;
-    font-weight: bold;
-    display: inline-block;
-    font-size: unset;
-    cursor: pointer;
-    text-decoration: underline;
-    font-family: unset;
-    letter-spacing: unset;
+  padding: unset;
+  background: unset;
+  color: #444;
+  font-weight: bold;
+  display: inline-block;
+  font-size: unset;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: unset;
+  letter-spacing: unset;
 }
+
+/* Headings */
 
 div.page h2 {
   margin: 0 0 15px 0;
@@ -100,26 +108,34 @@ div.page h2 {
   text-shadow: 0 1px 2px #ccc;
 }
 
+/* Main body */
+
 div.page div.body {
   padding: 10px;
 }
 
+/* Footer - improved text contrast */
+
 div.page div.footer {
   background: #eee;
-  color: #888;
+  color: #555;
   padding: 5px 10px;
   font-size: 12px;
 }
 
+/* Follow status */
+
 div.page div.followstatus {
   border: 1px solid #ccc;
-  background: #E3EBEA;
+  background: #e3ebea;
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   padding: 3px;
   font-size: 13px;
 }
+
+/* Observations */
 
 div.page ul.observations {
   list-style: none;
@@ -130,8 +146,8 @@ div.page ul.observations {
 div.page ul.observations li {
   margin: 10px 0;
   padding: 5px;
-  background: #F0FAF9;
-  border: 1px solid #DBF3F1;
+  background: #f0faf9;
+  border: 1px solid #dbf3f1;
   border-radius: 2px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -148,15 +164,19 @@ div.page ul.observations li img {
   padding: 0 10px 0 0;
 }
 
+/* Improved timestamp contrast */
+
 div.page ul.observations li small {
   font-size: 0.9em;
-  color: #888;
+  color: #555;
 }
+
+/* Observation input box */
 
 div.page div.observationbox {
   margin: 10px 0;
   padding: 5px;
-  background: #F0FAF9;
+  background: #f0faf9;
   border: 1px solid #e29494;
   border-radius: 2px;
   -moz-border-radius: 5px;
@@ -182,10 +202,11 @@ div.page div.observationbox input[type="submit"] {
   margin-left: 5px;
 }
 
+/* Messages */
+
 div.message {
   list-style: none;
   margin: 10px 10px 0 10px;
-
   background: #f3b9b9;
   border: 1px solid #ce8181;
   border-radius: 2px;
@@ -205,16 +226,20 @@ ul.message li {
   font-size: 13px;
 }
 
+/* Error messages */
+
 div.error {
   margin: 10px 0;
-  background: #FAE4E4;
-  border: 1px solid #DD6F6F;
+  background: #fae4e4;
+  border: 1px solid #dd6f6f;
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   padding: 4px;
   font-size: 13px;
 }
+
+/* Topics sidebar */
 
 div.topics {
   width: 180px;
@@ -239,52 +264,69 @@ ul.topic {
 li.topic {
   margin: 10px 0;
   padding: 5px;
-  background: #F0FAF9;
-  border: 1px solid #DBF3F1;
+  background: #f0faf9;
+  border: 1px solid #dbf3f1;
   border-radius: 2px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   min-height: 20px;
 }
 
+/* Forms */
+
 form * {
-    margin: 2px 0;
+  margin: 2px 0;
 }
 
+/* Buttons - darker background for accessible contrast */
+
 button {
-    background-color: #cc6e6e;
-    border: none;
-    color: white;
-    padding: 8px 16px;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
+  background-color: #8b4949;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 button:hover {
-    background-color: #8b4949;
+  background-color: #713636;
 }
 
+/* Navigation list */
+
 ul.nav {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #cc6e6e;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #8b4949;
 }
 
 ul.nav li {
-    float: left;
+  float: left;
 }
 
 ul.nav li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 8px 8px;
-    text-decoration: none;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 8px 8px;
+  text-decoration: none;
 }
 
 ul.nav li a:hover {
-    background-color: #8b4949;
+  background-color: #713636;
+}
+
+/* Register button - accessibility contrast fix */
+
+#registerSubmit {
+  background-color: #8b4949;
+  color: white;
+}
+
+#registerSubmit:hover {
+  background-color: #713636;
 }
