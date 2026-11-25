@@ -17,10 +17,27 @@ public class ObservationE2ETests : PageTest
         Environment.GetEnvironmentVariable("BISON_E2E_BASE_URL")
         ?? "http://127.0.0.1:5005";
 
-    private static string DatabasePath =>
-        Environment.GetEnvironmentVariable("BISON_E2E_DB")
-        ?? throw new InvalidOperationException(
-            "BISON_E2E_DB must point to the test database.");
+    private static string DatabasePath
+    {
+        get
+        {
+            var configuredPath =
+                Environment.GetEnvironmentVariable("BISON_E2E_DB");
+
+            if (!string.IsNullOrWhiteSpace(configuredPath))
+            {
+                return Path.GetFullPath(configuredPath);
+            }
+
+            return Path.GetFullPath(
+                Path.Combine(
+                    AppContext.BaseDirectory,
+                    "..", "..", "..", "..", "..",
+                    "bison-e2e.db"
+                )
+            );
+        }
+    }
 
     // Change this if your observation form is on another page.
     private const string ObservationFormPath = "/obs";

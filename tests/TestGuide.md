@@ -40,14 +40,12 @@ Leave Terminal 1 running. The server must use an initialized, separate E2E datab
 Mac:
 
 ```bash
-BISON_E2E_DB="$PWD/bison-e2e.db" dotnet test tests/Bison.E2ETests
+dotnet test tests/Bison.E2ETests
 ```
 
 Windows (PowerShell):
 
 ```powershell
-$env:BISON_E2E_DB = Join-Path (Get-Location) "bison-e2e.db"
-
 dotnet test tests/Bison.E2ETests
 ```
 
