@@ -69,6 +69,11 @@ div.page h1 img {
 /* Navigation */
 
 div.page div.navigation {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+
   background: #dee9e8;
   padding: 4px 10px;
   border-top: 1px solid #ccc;
@@ -153,7 +158,6 @@ div.page ul.observations li {
   -webkit-border-radius: 5px;
   min-height: 48px;
 }
-
 
 div.page ul.observations p {
   margin: 0;
