@@ -26,7 +26,6 @@
 <body>
     <div class="page">
 
-        <!-- Accessible page header -->
         <header>
             <h1>
                 <img src="/images/icon1.png" alt="" />
@@ -34,7 +33,6 @@
             </h1>
         </header>
 
-        <!-- Accessible navigation -->
         <div class="navigation" role="navigation" aria-label="Main navigation">
 
             @if (User.Identity?.IsAuthenticated == true)
@@ -44,6 +42,10 @@
                 </a>
 
                 <a href="/">Public Observations</a>
+
+                <a asp-page="/AboutMe">
+                    About me
+                </a>
 
                 <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post"
                       style="display:inline">
@@ -68,12 +70,10 @@
             }
         </div>
 
-        <!-- Accessible main content -->
         <div class="body" role="main">
             @RenderBody()
         </div>
 
-        <!-- Accessible footer -->
         <div class="footer" role="contentinfo">
             Bison &mdash; An ASP.NET Application
         </div>
