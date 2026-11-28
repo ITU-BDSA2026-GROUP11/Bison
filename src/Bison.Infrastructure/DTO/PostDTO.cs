@@ -11,4 +11,7 @@ public class PostDTO
     public int PostId { get; set; }
 
     public string? ImgPath {get; set; }
+
+    // Where the animal was observed, or null if no location was given
+    public string? Location { get; set; }
 }
