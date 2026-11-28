@@ -16,6 +16,9 @@ public class ObservationService : IObservationService
     // Amount of observations each page holds
     private const int PageSize = 32;
 
+    // Longest location a user may enter (matches the database column)
+    public const int MaxLocationLength = 100;
+
     // Gets the repository and the filter service through dependency injection
     public ObservationService(IPostRepository repository, ITaxonFilterService taxonFilter)
     {
@@ -112,10 +115,22 @@ public class ObservationService : IObservationService
         return _repository.GetProposals(observationId);
     }
 
-    public async Task addObservation(string text, int authorID, int taxonId, string imgPath)
+    // Validates the optional location and stores a new observation
+    public async Task<PostResult> addObservation(string text, int authorID, int taxonId, string imgPath, string? location = null)
     {
-        await _repository.addObservation(text, authorID, taxonId, imgPath);
+        // No location (empty or only spaces) is allowed and stored as null
+        string? cleanLocation = string.IsNullOrWhiteSpace(location) ? null : location.Trim();
+
+        // A given location must fit in the database column
+        if (cleanLocation != null && cleanLocation.Length > MaxLocationLength)
+        {
+            return PostResult.Fail($"The location can be at most {MaxLocationLength} characters long.");
+        }
+
+        await _repository.addObservation(text, authorID, taxonId, imgPath, cleanLocation);
+        return PostResult.Ok();
     }
+
     // Validates and stores a new comment
     public PostResult AddComment(int observationId, int authorId, string? text)
     {

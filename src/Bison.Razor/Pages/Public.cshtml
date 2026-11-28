@@ -23,10 +23,17 @@
                         <option value="@taxon.TaxonId">@taxon.Name</option>
                     }
                 </select>
+                <input type="text" asp-for="InputLocation" placeholder="Where? (optional)" aria-label="Location (optional)" data-testid="observation-location" />
                 <input type="file" id="imageFile" asp-for="InputPhoto" name="InputPhoto" onchange="return imageValidation()" />
                 <input type="submit" value="Share" data-testid="observation-submit" />
             </form>
 
+            @if (Model.LocationError != null)
+            {
+                <p role="alert" style="color: red; clear: both" data-testid="observation-location-error">
+                    @Model.LocationError
+                </p>
+            }
         </div>
     }
             

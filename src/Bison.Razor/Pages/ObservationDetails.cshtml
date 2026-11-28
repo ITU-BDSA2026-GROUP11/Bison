@@ -33,6 +33,15 @@
                 @obs.Text
                 <small>&mdash; @obs.TimeStamp</small>
             </p>
+
+            @* The location is optional, so it is only shown when the observation has one *@
+            @if (!string.IsNullOrWhiteSpace(obs.Location))
+            {
+                <p data-testid="observation-location">
+                    <small>Location: @obs.Location</small>
+                </p>
+            }
+
             @if (!string.IsNullOrWhiteSpace(obs.ImgPath))
             {
             <img src="/@obs.ImgPath" alt="Image" width="350" />

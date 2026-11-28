@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
 namespace Bison.Core.Models;
@@ -19,4 +20,9 @@ public class Observation : Post
     public List<Proposal> Proposals { get; set; } = new();
 
     public string? ImgPath {get; set;}
+
+    // Optional place where the animal was observed, for example "Amager Fælled".
+    // Null when the user did not give a location.
+    [MaxLength(100)]
+    public string? Location { get; set; }
 }

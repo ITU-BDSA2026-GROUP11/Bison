@@ -11,7 +11,7 @@ public record CommentViewModel(string Author, string Message, string Timestamp);
 
 public record ProposalViewModel(string Author, string TaxonId, string Timestamp);
 
-// Result of trying to add a comment or proposal.
+// Result of trying to add an observation, comment or proposal.
 // Succeeded is false when validation or saving failed, and ErrorMessage says why.
 public record PostResult(bool Succeeded, string? ErrorMessage = null)
 {
@@ -46,7 +46,10 @@ public interface IObservationService
     // Returns all taxon proposals on an observation, oldest first
     public List<proposalDTO> GetProposals(int observationId);
 
-    public Task addObservation(string text, int authorID, int taxonId, string imgPath);
+    // Adds an observation. The image and the location are optional.
+    // Fails if the location is longer than ObservationService.MaxLocationLength.
+    public Task<PostResult> addObservation(string text, int authorID, int taxonId, string imgPath, string? location = null);
+
     // Adds a comment to an observation.
     // Fails if the text is empty, the observation does not exist, or saving fails.
     public PostResult AddComment(int observationId, int authorId, string? text);

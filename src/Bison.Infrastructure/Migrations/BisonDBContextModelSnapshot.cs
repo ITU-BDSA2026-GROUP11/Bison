@@ -293,6 +293,10 @@ namespace Bison.Infastructure.Migrations
                     b.Property<string>("ImgPath")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Location")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("TaxonId")
                         .HasColumnType("INTEGER");
 
