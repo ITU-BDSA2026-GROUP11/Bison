@@ -124,8 +124,7 @@ static async Task EnsureCourseAuthorAsync(BisonDBContext context, UserManager<Au
         {
             Name = name,
             UserName = email,
-            Email = email,
-            EmailConfirmed = true
+            Email = email
         };
 
         var result = await userManager.CreateAsync(author, password);
@@ -140,7 +139,6 @@ static async Task EnsureCourseAuthorAsync(BisonDBContext context, UserManager<Au
 
     // Existing author: preserve ID and associated posts
     author.UserName = email;
-    author.EmailConfirmed = true;
 
     if (string.IsNullOrWhiteSpace(author.Name))
     {

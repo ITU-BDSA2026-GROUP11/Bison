@@ -1,11 +1,21 @@
 ﻿@page "/"
 @model Bison.Razor.Pages.PublicModel
+@using Bison.Core.Models
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<Author> UserManager
 @{
     ViewData["Title"] = "Bison";
     Layout = "Shared/_Layout";
 
     // Keeps the taxon filter in the paging links
     var taxonQuery = Model.SelectedTaxonId.HasValue ? $"&taxon={Model.SelectedTaxonId}" : "";
+    var currentAuthor = User.Identity?.IsAuthenticated == true
+    ? await UserManager.GetUserAsync(User)
+    : null;
+
+    var displayName = !string.IsNullOrWhiteSpace(currentAuthor?.Name)
+        ? currentAuthor.Name
+        : "User";
 }
 
 <div>
@@ -13,7 +23,7 @@
     @if (User.Identity?.IsAuthenticated == true)
     {
         <div class="observationbox">
-            <h3>What did you see, @(User.Identity.Name)?</h3>
+            <h3>What did you see, @displayName?</h3>
             <form method="post" enctype="multipart/form-data">
                 <input style="float: left" type="text" asp-for="Text" name="InputObs" data-testid="observation-text" />
                 <select asp-for="SelectedTaxonId" data-testid="observation-taxon">
@@ -23,7 +33,8 @@
                         <option value="@taxon.TaxonId">@taxon.Name</option>
                     }
                 </select>
-                <input type="file" id="imageFile" asp-for="InputPhoto" name="InputPhoto" onchange="return imageValidation()" />
+                <input type="file" id="imageFile" asp-for="InputPhoto" name="InputPhoto"
+                       onchange="return imageValidation()" />
                 <input type="submit" value="Share" data-testid="observation-submit" />
             </form>
 
@@ -66,10 +77,10 @@
                         <small>&mdash; <a href="/ob/@obs.PostId">@obs.TimeStamp</a></small>
                     </p>
                     @if (!string.IsNullOrEmpty(obs.ImgPath))
-                        {
+                    {
                         //string path = "/" + @obs.ImgPath;
                         <img src="@obs.ImgPath" alt="Image" width="250px" />
-                        }
+                    }
                     
                 </li>
             }
@@ -89,17 +100,17 @@
 
 <script>
     function imageValidation() {
-    var imageInput = document.getElementById('imageFile');
-    var imagePath = imageInput.value;
-    var validExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+        var imageInput = document.getElementById('imageFile');
+        var imagePath = imageInput.value;
+        var validExtensions = /(\.jpg|\.jpeg|\.png)$/i;
 
-    if(!validExtensions.exec(imagePath)){
-        alert('Please upload a .png, .jpg, or .jpeg file');
-        imageInput.value = '';
-        return false;
-    }
-    else{
-        return true;
-    }
+        if (!validExtensions.exec(imagePath)) {
+            alert('Please upload a .png, .jpg, or .jpeg file');
+            imageInput.value = '';
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 </script>
