@@ -1,0 +1,152 @@
+@page "/about-me"
+@model Bison.Razor.Pages.AboutMeModel
+
+@{
+    ViewData["Title"] = "About me";
+    Layout = "Shared/_Layout";
+}
+
+<h2>About me</h2>
+
+<h3>My account information</h3>
+
+<p><strong>User ID:</strong> @Model.CurrentAuthor.Id</p>
+<p><strong>Name:</strong> @Model.CurrentAuthor.Name</p>
+<p><strong>Username:</strong> @Model.CurrentAuthor.UserName</p>
+<p><strong>Email:</strong> @Model.CurrentAuthor.Email</p>
+
+<h3>Linked accounts</h3>
+
+@if (Model.Logins.Any())
+{
+    <ul>
+        @foreach (var login in Model.Logins)
+        {
+            <li>@login.LoginProvider</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No external accounts linked.</p>
+}
+
+<h3>My observations (@Model.Observations.Count)</h3>
+
+@if (Model.Observations.Any())
+{
+    <ul class="observations">
+        @foreach (var observation in Model.Observations)
+        {
+            <li>
+                <p>
+                    <a href="/ob/@observation.PostId">
+                        Observation #@observation.PostId
+                    </a>
+                </p>
+                <p>@observation.Text</p>
+                <p>Taxon ID: @observation.TaxonId</p>
+
+                @if (!string.IsNullOrWhiteSpace(observation.ImgPath))
+                {
+                    <p>Image: @observation.ImgPath</p>
+                }
+
+                <small>@observation.TimeStamp</small>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>You have no observations.</p>
+}
+
+<h3>My comments (@Model.Comments.Count)</h3>
+
+@if (Model.Comments.Any())
+{
+    <ul class="observations">
+        @foreach (var comment in Model.Comments)
+        {
+            <li>
+                <p>@comment.Text</p>
+                <p>
+                    On observation
+                    <a href="/ob/@comment.ObservationId">
+                        #@comment.ObservationId
+                    </a>
+                </p>
+                <small>@comment.TimeStamp</small>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>You have no comments.</p>
+}
+
+<h3>My proposals (@Model.Proposals.Count)</h3>
+
+@if (Model.Proposals.Any())
+{
+    <ul class="observations">
+        @foreach (var proposal in Model.Proposals)
+        {
+            <li>
+                <p>@proposal.Text</p>
+                <p>Proposed taxon ID: @proposal.TaxonId</p>
+                <p>
+                    On observation
+                    <a href="/ob/@proposal.ObservationId">
+                        #@proposal.ObservationId
+                    </a>
+                </p>
+                <small>@proposal.TimeStamp</small>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>You have no proposals.</p>
+}
+
+<hr />
+
+<h3>Forget me!</h3>
+
+<p>
+    You can delete your account and personal information.
+    You must choose whether to keep your observations online.
+</p>
+
+<form method="post" asp-page-handler="Forget" onsubmit="return confirm('Delete your account? This cannot be undone.');">
+
+    <fieldset>
+        <legend>What should happen to your observations?</legend>
+
+        <p>
+            <label>
+                <input type="radio" name="choice" value="keep" required />
+                Keep my observations as "deleted user"
+            </label>
+        </p>
+
+        <p>
+            <label>
+                <input type="radio" name="choice" value="delete" required />
+                Delete my observations too
+            </label>
+        </p>
+    </fieldset>
+
+    <p>
+        Your comments and proposals will be deleted in both cases.
+    </p>
+
+    <button type="submit" style="background-color: #8b1e1e; color: white;">
+        Forget me!
+    </button>
+</form>
