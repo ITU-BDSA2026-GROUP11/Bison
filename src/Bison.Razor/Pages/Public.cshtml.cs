@@ -32,6 +32,13 @@ public class PublicModel : PageModel
     [BindProperty] public required string InputObs {get; set;} = "";
 
     [BindProperty] public IFormFile? InputPhoto {get; set;} = null;
+
+    // Optional location typed into the observation form
+    [BindProperty] public string? InputLocation { get; set; }
+
+    // Shown under the observation form when the location is invalid
+    public string? LocationError { get; set; }
+
     public PublicModel(IObservationService service, IWebHostEnvironment env)
     {
         _service = service;
@@ -102,7 +109,18 @@ public class PublicModel : PageModel
         int obsLength = InputObs.Length;
         if (isImgValid && !string.IsNullOrEmpty(InputObs) && obsLength < 200)
         {
-        await _service.addObservation(InputObs, int.Parse(currentlyUserId), SelectedTaxonId.Value, photoPath);
+            var result = await _service.addObservation(InputObs, int.Parse(currentlyUserId), SelectedTaxonId.Value, photoPath, InputLocation);
+
+            if (!result.Succeeded)
+            {
+                // Show the timeline again with the error, and keep what the user typed
+                LocationError = result.ErrorMessage;
+                Text = InputObs;
+                CurrentPage = 1;
+                Taxa = _service.GetAllTaxa();
+                Observations = _service.GetObservations(CurrentPage);
+                return Page();
+            }
         }
         return RedirectToPage("Public");
     }
